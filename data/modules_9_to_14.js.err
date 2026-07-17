@@ -1,0 +1,708 @@
+// C++ & DSA MasterClass Pro - Curriculum Data (Modules 9 to 14)
+window.CURRICULUM_DATA = window.CURRICULUM_DATA || [];
+
+window.CURRICULUM_DATA.push(
+    // =========================================================================
+    // MODULE 9: Operator Overloading in C++
+    // =========================================================================
+    {
+        id: "mod-9",
+        title: "Operator Overloading in C++",
+        category: "oop",
+        subtopics: [
+            {
+                id: "mod-9-1",
+                title: "What is operator overloading?",
+                level: "Intermediate",
+                summary: "Giving special user-defined behavior to standard C++ operators (+, -, *, ==) when applied to class objects.",
+                content: `
+                    <h2>Extending Standard Operators for Custom Classes</h2>
+                    <p><strong>Operator Overloading</strong> is a form of compile-time polymorphism where standard C++ operators (<code>+</code>, <code>-</code>, <code>==</code>, <code>&lt;&lt;</code>) are taught how to operate on user-defined class objects (<code>Complex c3 = c1 + c2;</code>).</p>
+                    <div class="highlight-box warning">
+                        <strong>Operators that CANNOT be overloaded:</strong> Scope resolution (<code>::</code>), Member selection (<code>.</code>), Member pointer (<code>.*</code>), and Ternary conditional (<code>?:</code>).
+                    </div>
+                `
+            },
+            {
+                id: "mod-9-2",
+                title: "Types of operator overloading",
+                level: "Intermediate",
+                summary: "Unary operators (single operand like ++x) vs Binary operators (two operands like a + b).",
+                content: `
+                    <h2>Unary vs Binary Operator Overloading</h2>
+                    <ul>
+                        <li><strong>Unary Operators:</strong> Operate on a single calling object (<code>++obj</code>, <code>--obj</code>, <code>-obj</code>). Take zero explicit parameters when declared as a member function.</li>
+                        <li><strong>Binary Operators:</strong> Operate on two objects (<code>objA + objB</code>). Take exactly one explicit parameter (<code>objB</code>) when declared as a member function on <code>objA</code>.</li>
+                    </ul>
+                `
+            },
+            {
+                id: "mod-9-3",
+                title: "Unary operator overloading",
+                level: "Intermediate",
+                summary: "Overloading unary negation (-) and logical not (!) operators inside class boundary.",
+                content: `
+                    <h2>Overloading Unary Negation (<code>-</code>)</h2>
+                    <div class="code-container">
+                        <div class="code-header"><span class="code-lang">unary_negation.cpp</span><button class="copy-code-btn" onclick="app.copyCode(this)">Copy Code</button></div>
+                        <pre><code class="language-cpp">#include &lt;iostream&gt;
+using namespace std;
+
+class Vector2D {
+public:
+    int x, y;
+    Vector2D(int xVal, int yVal) : x(xVal), y(yVal) {}
+
+    // Unary minus overload (-v)
+    Vector2D operator-() {
+        return Vector2D(-x, -y);
+    }
+};
+
+int main() {
+    Vector2D v1(10, -5);
+    Vector2D v2 = -v1;
+    cout &lt;&lt; "Negated: (" &lt;&lt; v2.x &lt;&lt; ", " &lt;&lt; v2.y &lt;&lt; ")" &lt;&lt; endl; // (-10, 5)
+    return 0;
+}</code></pre>
+                    </div>
+                `
+            },
+            {
+                id: "mod-9-4",
+                title: "Pre post increment operator overloading",
+                level: "Intermediate",
+                summary: "Distinguishing pre-increment (++obj) from post-increment (obj++) via dummy int parameter.",
+                content: `
+                    <h2>Pre vs Post Increment Overloading (<code>++obj</code> vs <code>obj++</code>)</h2>
+                    <p>To differentiate pre-increment from post-increment, C++ mandates that post-increment must accept a dummy <code>int</code> parameter in its signature!</p>
+                    
+                    <div class="code-container">
+                        <div class="code-header"><span class="code-lang">increment_overload.cpp</span><button class="copy-code-btn" onclick="app.copyCode(this)">Copy Code</button></div>
+                        <pre><code class="language-cpp">class Counter {
+public:
+    int count;
+    Counter(int c = 0) : count(c) {}
+
+    // 1. Pre-Increment (++obj): returns reference to modified self
+    Counter& operator++() {
+        ++count;
+        return *this;
+    }
+
+    // 2. Post-Increment (obj++): accepts dummy 'int', returns un-incremented copy
+    Counter operator++(int) {
+        Counter temp = *this;
+        count++;
+        return temp;
+    }
+};</code></pre>
+                    </div>
+                `
+            },
+            {
+                id: "mod-9-5",
+                title: "Pre post decrement operator overloading",
+                level: "Intermediate",
+                summary: "Overloading pre-decrement (--obj) and post-decrement (obj--) on custom numeric classes.",
+                content: `
+                    <h2>Pre vs Post Decrement Overloading</h2>
+                    <p>Follows the exact same mechanics as increment: <code>Counter& operator--()</code> vs <code>Counter operator--(int)</code>.</p>
+                `
+            },
+            {
+                id: "mod-9-6",
+                title: "Pre and post increment with assignment operator overloading",
+                level: "Advanced",
+                summary: "Chaining compound operators and self-assignment checks during operator chaining.",
+                content: `
+                    <h2>Chaining Assignment and Compound Increment</h2>
+                    <p>When chaining assignments like <code>a = ++b;</code> or <code>a += b;</code>, returning <code>*this</code> by reference (<code>MyClass&</code>) ensures proper lvalue assignability without temporary object overhead.</p>
+                `
+            },
+            {
+                id: "mod-9-7",
+                title: "Binary operator overloading",
+                level: "Intermediate",
+                summary: "Overloading two-operand arithmetic operators inside classes.",
+                content: `
+                    <h2>Binary Operator Overloading Architecture</h2>
+                    <p>When <code>objA + objB</code> executes, C++ translates it to <code>objA.operator+(objB)</code>. Thus, <code>objA</code> is the implicit <code>*this</code> caller and <code>objB</code> is the explicit parameter.</p>
+                `
+            },
+            {
+                id: "mod-9-8",
+                title: "Arithmetic operator overloading",
+                level: "Intermediate",
+                summary: "Overloading addition (+), subtraction (-), and multiplication (*) for Complex Numbers class.",
+                content: `
+                    <h2>Complex Number Arithmetic Overloading (<code>+</code>, <code>-</code>, <code>*</code>)</h2>
+                    
+                    <div class="code-container">
+                        <div class="code-header"><span class="code-lang">complex_arithmetic.cpp</span><button class="copy-code-btn" onclick="app.copyCode(this)">Copy Code</button></div>
+                        <pre><code class="language-cpp">#include &lt;iostream&gt;
+using namespace std;
+
+class Complex {
+public:
+    double real, imag;
+    Complex(double r = 0, double i = 0) : real(r), imag(i) {}
+
+    // Overload + operator for Complex + Complex
+    Complex operator+(const Complex& other) const {
+        return Complex(real + other.real, imag + other.imag);
+    }
+};
+
+int main() {
+    Complex c1(3.5, 2.0), c2(1.5, 4.5);
+    Complex c3 = c1 + c2; // Calls c1.operator+(c2)
+    cout &lt;&lt; "Sum: " &lt;&lt; c3.real &lt;&lt; " + " &lt;&lt; c3.imag &lt;&lt; "i" &lt;&lt; endl; // 5 + 6.5i
+    return 0;
+}</code></pre>
+                    </div>
+                `
+            },
+            {
+                id: "mod-9-9",
+                title: "Friend function",
+                level: "Intermediate",
+                summary: "Granting external non-member functions full access to private and protected class data members.",
+                content: `
+                    <h2>Breaking Encapsulation Safely: The <code>friend</code> Function</h2>
+                    <p>A <code>friend</code> function is declared inside a class but is not a member of that class. It is granted special administrative privileges to read and modify <code>private</code> and <code>protected</code> variables.</p>
+                    <p>Essential when overloading stream operators <code>std::ostream& operator&lt;&lt;(ostream& os, const MyClass& obj)</code> because the left operand (<code>cout</code>) belongs to standard library!</p>
+                `
+            },
+            {
+                id: "mod-9-10",
+                title: "Relational operator overloading",
+                level: "Intermediate",
+                summary: "Overloading ==, !=, <, and > to enable direct object comparison and sorting.",
+                content: `
+                    <h2>Overloading Relational Comparison (<code>==</code>, <code>&lt;</code>)</h2>
+                    <div class="code-container">
+                        <div class="code-header"><span class="code-lang">relational_overload.cpp</span></div>
+                        <pre><code class="language-cpp">bool operator==(const Complex& other) const {
+    return (real == other.real && imag == other.imag);
+}
+bool operator&lt;(const Complex& other) const {
+    return (real*real + imag*imag) &lt; (other.real*other.real + other.imag*other.imag);
+}</code></pre>
+                    </div>
+                `
+            }
+        ]
+    },
+
+    // =========================================================================
+    // MODULE 10: Object Oriented Programming with C++
+    // =========================================================================
+    {
+        id: "mod-10",
+        title: "Object Oriented Programming with C++",
+        category: "oop",
+        subtopics: [
+            {
+                id: "mod-10-1",
+                title: "What is Inline Function?",
+                level: "Intermediate",
+                summary: "Requesting compiler macro substitution of function body to eliminate call-stack jump overhead.",
+                content: `
+                    <h2>High-Performance Optimization: <code>inline</code> Functions</h2>
+                    <p>When a small function is prefixed with <code>inline</code>, the compiler is requested to replace every function call site directly with the actual body of the function during compilation—eliminating stack pushing/popping overhead.</p>
+                    <div class="code-container">
+                        <div class="code-header"><span class="code-lang">inline_func.cpp</span></div>
+                        <pre><code class="language-cpp">inline int square(int x) { return x * x; }
+// Calling square(5) is expanded at compile time directly into (5 * 5)</code></pre>
+                    </div>
+                `
+            },
+            {
+                id: "mod-10-2",
+                title: "Inheritance",
+                level: "Intermediate",
+                summary: "Creating derived classes from parent base classes to inherit attributes and methods.",
+                content: `
+                    <h2>Code Reusability via Inheritance</h2>
+                    <p>Inheritance allows a new class (<code>Derived</code>) to acquire properties of an existing class (<code>Base</code>). Syntax: <code>class Derived : public Base {}</code>.</p>
+                `
+            },
+            {
+                id: "mod-10-3",
+                title: "Role of constructor in inheritance",
+                level: "Intermediate",
+                summary: "Base class constructors fire first before Derived class constructors across hierarchy tree.",
+                content: `
+                    <h2>Constructor Execution Order in Inheritance Tree</h2>
+                    <p>When initializing a child class object <code>Derived d;</code>, the execution order is:</p>
+                    <ol>
+                        <li>Base class constructor <code>Base()</code> executes first.</li>
+                        <li>Derived class constructor <code>Derived()</code> executes second.</li>
+                    </ol>
+                    <p>Destructors execute in exact reverse order (<code>~Derived()</code> then <code>~Base()</code>).</p>
+                `
+            },
+            {
+                id: "mod-10-4",
+                title: "Multiple inheritance",
+                level: "Intermediate",
+                summary: "A single child inheriting from two or more distinct parent base classes simultaneously.",
+                content: `
+                    <h2>Multiple Inheritance (<code>class Child : public Parent1, public Parent2</code>)</h2>
+                    <p>Allows inheriting attributes from multiple independent domains simultaneously (e.g., <code>SmartPhone</code> inherits from both <code>Phone</code> and <code>Camera</code>).</p>
+                `
+            },
+            {
+                id: "mod-10-5",
+                title: "Difference Between Method Overloading and Method Overriding",
+                level: "Intermediate",
+                summary: "Compile-time signature variation (Overloading) vs Runtime virtual function re-definition across inheritance tree (Overriding).",
+                content: `
+                    <h2>Overloading vs Overriding Comparison</h2>
+                    <div class="code-container">
+                        <div class="code-header"><span class="code-lang">Comparison Matrix</span></div>
+                        <pre><code>+----------------------+------------------------------------+-------------------------------------+
+| Criteria             | Method Overloading                 | Method Overriding (Virtual)         |
++----------------------+------------------------------------+-------------------------------------+
+| Scope                | Same class scope                   | Across Base and Derived class scope |
+| Function Signature   | MUST differ in parameters          | MUST be exactly identical           |
+| Polymorphism Type    | Compile-Time (Early Binding)       | Runtime (Late Binding / vtable)     |
+| Virtual Keyword      | Not required                       | Base method must be marked virtual  |
++----------------------+------------------------------------+-------------------------------------+</code></pre>
+                    </div>
+                `
+            },
+            {
+                id: "mod-10-6",
+                title: "Pointers to an object",
+                level: "Intermediate",
+                summary: "Accessing class members via object pointers using the arrow (->) member access operator.",
+                content: `
+                    <h2>Object Pointers and Arrow Operator (<code>-&gt;</code>)</h2>
+                    <p>When you hold a pointer to an object (<code>Student* ptr = new Student();</code>), you access its members using the arrow operator (<code>ptr-&gt;display()</code>) instead of dot (<code>.</code>).</p>
+                `
+            },
+            {
+                id: "mod-10-7",
+                title: "Virtual fucntion",
+                level: "Advanced",
+                summary: "Late binding dynamic polymorphism using vtable mechanism and virtual destructor requirement.",
+                content: `
+                    <h2>Runtime Polymorphism: Virtual Functions & <code>vtable</code></h2>
+                    <p>A <code>virtual</code> function declared in a base class informs the compiler to defer method address resolution until runtime (<code>Late Binding</code>) by querying the object's Virtual Table (<code>vtable</code> pointer).</p>
+                    
+                    <div class="code-container">
+                        <div class="code-header"><span class="code-lang">virtual_polymorphism.cpp</span><button class="copy-code-btn" onclick="app.copyCode(this)">Copy Code</button></div>
+                        <pre><code class="language-cpp">#include &lt;iostream&gt;
+using namespace std;
+
+class Animal {
+public:
+    virtual void makeSound() { cout &lt;&lt; "Generic Animal Sound" &lt;&lt; endl; }
+    virtual ~Animal() {} // Virtual destructor ensures proper cleanup of derived objects!
+};
+
+class Dog : public Animal {
+public:
+    void makeSound() override { cout &lt;&lt; "Woof! Woof!" &lt;&lt; endl; }
+};
+
+int main() {
+    Animal* pet = new Dog(); // Base pointer holding Derived object
+    pet-&gt;makeSound();        // Outputs "Woof! Woof!" dynamically via vtable lookup!
+    delete pet;
+    return 0;
+}</code></pre>
+                    </div>
+                `
+            },
+            {
+                id: "mod-10-8",
+                title: "Hybrid inheritance",
+                level: "Advanced",
+                summary: "Combining hierarchical, multiple, and multi-level inheritance structures.",
+                content: `
+                    <h2>Hybrid Inheritance Architecture</h2>
+                    <p>Hybrid inheritance mixes two or more inheritance patterns into a complex topology (<code>Diamond Problem</code>).</p>
+                `
+            },
+            {
+                id: "mod-10-9",
+                title: "Virtual base class",
+                level: "Advanced",
+                summary: "Solving the Diamond Problem (ambiguity from duplicate base instances) using virtual inheritance (<code>virtual public Base</code>).",
+                content: `
+                    <h2>Solving the Diamond Problem: Virtual Base Classes</h2>
+                    <p>If <code>Class B</code> and <code>Class C</code> both inherit from <code>Class A</code>, and <code>Class D</code> inherits from both <code>B</code> and <code>C</code>, <code>D</code> receives two duplicate copies of <code>A</code>'s variables! Using <code>class B : virtual public A</code> ensures only a single shared instance of <code>A</code> is instantiated.</p>
+                `
+            },
+            {
+                id: "mod-10-10",
+                title: "Aggregation in C++",
+                level: "Intermediate",
+                summary: "HAS-A structural association where child objects can exist independently of parent container lifetime.",
+                content: `
+                    <h2>Object Association: Aggregation (<code>HAS-A</code>) vs Composition</h2>
+                    <p>In <strong>Aggregation</strong> (<code>HAS-A</code>), one class contains a pointer/reference to another class (<code>Department</code> has <code>Professor*</code>), but if the container dies, the contained object lives on independently.</p>
+                `
+            },
+            {
+                id: "mod-10-11",
+                title: "C++ I/O Streams",
+                level: "Intermediate",
+                summary: "Deep dive into ios, istream, ostream, and iomanip formatting manipulators (setw, setprecision).",
+                content: `
+                    <h2>Formatting Streams with <code>&lt;iomanip&gt;</code></h2>
+                    <div class="code-container">
+                        <div class="code-header"><span class="code-lang">iomanip_demo.cpp</span></div>
+                        <pre><code class="language-cpp">#include &lt;iomanip&gt;
+cout &lt;&lt; fixed &lt;&lt; setprecision(2) &lt;&lt; 3.14159 &lt;&lt; endl; // Outputs 3.14
+cout &lt;&lt; setw(10) &lt;&lt; "RightAlign" &lt;&lt; endl;</code></pre>
+                    </div>
+                `
+            },
+            {
+                id: "mod-10-12",
+                title: "get() and getline() functions",
+                level: "Beginner",
+                summary: "Reading multi-word string input with spaces using getline(cin, str) and unformatted character reading with cin.get().",
+                content: `
+                    <h2>Reading Strings with Spaces: <code>cin.getline()</code> and <code>std::getline()</code></h2>
+                    <p>The standard <code>cin &gt;&gt; str</code> stops reading the exact moment it hits a space or newline (<code>"Alice Smith" -&gt; reads only "Alice"</code>). To capture full sentences including spaces, use <code>std::getline(cin, fullName)</code>.</p>
+                    
+                    <div class="code-container">
+                        <div class="code-header"><span class="code-lang">getline_demo.cpp</span><button class="copy-code-btn" onclick="app.copyCode(this)">Copy Code</button></div>
+                        <pre><code class="language-cpp">#include &lt;iostream&gt;
+#include &lt;string&gt;
+using namespace std;
+
+int main() {
+    string fullName;
+    cout &lt;&lt; "Enter full name: ";
+    getline(cin, fullName); // Captures entire line with spaces!
+    cout &lt;&lt; "Welcome, " &lt;&lt; fullName &lt;&lt; endl;
+    return 0;
+}</code></pre>
+                    </div>
+                `
+            }
+        ]
+    },
+
+    // =========================================================================
+    // MODULE 11: File Handling in C++
+    // =========================================================================
+    {
+        id: "mod-11",
+        title: "File Handling in C++",
+        category: "oop",
+        subtopics: [
+            {
+                id: "mod-11-1",
+                title: "What is File Handling?",
+                level: "Intermediate",
+                summary: "Persistent storage using <fstream> classes: ifstream (read), ofstream (write), and fstream (both).",
+                content: `
+                    <h2>Persistent Data Storage via <code>&lt;fstream&gt;</code></h2>
+                    <p>File handling allows C++ programs to save state, user databases, and system logs permanently onto hard drives.</p>
+                    <ul>
+                        <li><strong><code>std::ofstream</code>:</strong> Output file stream for creating and writing data to files.</li>
+                        <li><strong><code>std::ifstream</code>:</strong> Input file stream for reading data from existing files on disk.</li>
+                        <li><strong><code>std::fstream</code>:</strong> Combined stream supporting both read and write operations simultaneously.</li>
+                    </ul>
+                `
+            },
+            {
+                id: "mod-11-2",
+                title: "How to Open a File Using Constructor?",
+                level: "Intermediate",
+                summary: "Opening files directly upon stream initialization (<code>ofstream fout(\"data.txt\");</code>).",
+                content: `
+                    <h2>Opening Files via Stream Constructor</h2>
+                    <div class="code-container">
+                        <div class="code-header"><span class="code-lang">open_constructor.cpp</span><button class="copy-code-btn" onclick="app.copyCode(this)">Copy Code</button></div>
+                        <pre><code class="language-cpp">#include &lt;fstream&gt;
+using namespace std;
+
+int main() {
+    // Constructor automatically opens "records.txt" for writing
+    ofstream outFile("records.txt");
+    if (outFile.is_open()) {
+        outFile &lt;&lt; "User: Alice | Score: 980" &lt;&lt; endl;
+        outFile.close(); // Explicitly flush and release OS handle
+    }
+    return 0;
+}</code></pre>
+                    </div>
+                `
+            },
+            {
+                id: "mod-11-3",
+                title: "How to Open File Using Open Method?",
+                level: "Intermediate",
+                summary: "Using .open() method with explicit file modes (ios::in, ios::out, ios::app, ios::binary).",
+                content: `
+                    <h2>Opening Files with Explicit Modes (<code>.open()</code>)</h2>
+                    <p>You can open files specifying bitwise mode flags:</p>
+                    <ul>
+                        <li><strong><code>ios::app</code>:</strong> Append mode (writes new data at the end without erasing existing contents).</li>
+                        <li><strong><code>ios::binary</code>:</strong> Binary mode (stores raw byte structures instead of text translation).</li>
+                    </ul>
+                    <div class="code-container">
+                        <div class="code-header"><span class="code-lang">open_method.cpp</span></div>
+                        <pre><code class="language-cpp">fstream file;
+file.open("app.log", ios::out | ios::app); // Opens for appending logs</code></pre>
+                    </div>
+                `
+            },
+            {
+                id: "mod-11-4",
+                title: "How to Read Data from File Line by Line",
+                level: "Intermediate",
+                summary: "Looping with getline(ifstream_obj, line) until EOF is reached.",
+                content: `
+                    <h2>Reading Files Line by Line (<code>getline()</code>)</h2>
+                    <div class="code-container">
+                        <div class="code-header"><span class="code-lang">read_lines.cpp</span><button class="copy-code-btn" onclick="app.copyCode(this)">Copy Code</button></div>
+                        <pre><code class="language-cpp">#include &lt;iostream&gt;
+#include &lt;fstream&gt;
+#include &lt;string&gt;
+using namespace std;
+
+int main() {
+    ifstream inFile("records.txt");
+    string line;
+    
+    while (getline(inFile, line)) { // Reads until End-Of-File (EOF)
+        cout &lt;&lt; "File Line -> " &lt;&lt; line &lt;&lt; endl;
+    }
+    inFile.close();
+    return 0;
+}</code></pre>
+                    </div>
+                `
+            },
+            {
+                id: "mod-11-5",
+                title: "How to read and write data",
+                level: "Intermediate",
+                summary: "Binary reading/writing of class object blocks using .write((char*)&obj, sizeof(obj)) and .read().",
+                content: `
+                    <h2>Binary File I/O for Class Objects (<code>.write()</code> / <code>.read()</code>)</h2>
+                    <p>For high-speed database projects (like our Bank Management System), storing class objects as raw binary bytes using <code>.write(reinterpret_cast&lt;char*&gt;(&obj), sizeof(obj))</code> is exponentially faster than parsing text lines.</p>
+                `
+            }
+        ]
+    },
+
+    // =========================================================================
+    // MODULE 12: Deep Dive into C++
+    // =========================================================================
+    {
+        id: "mod-12",
+        title: "Deep Dive into C++",
+        category: "oop",
+        subtopics: [
+            {
+                id: "mod-12-1",
+                title: "Preprocessor Directives",
+                level: "Intermediate",
+                summary: "#define macros, conditional compilation (#ifdef, #ifndef), and header guards.",
+                content: `
+                    <h2>Preprocessor Directives and Header Guards</h2>
+                    <p>The preprocessor transforms source code before the compiler starts. Essential directives include `#include`, `#define MAX 100`, and header guards (<code>#ifndef MY_HEADER_H #define MY_HEADER_H ... #endif</code>) that prevent duplicate class definitions.</p>
+                `
+            },
+            {
+                id: "mod-12-2",
+                title: "Templates in C++",
+                level: "Advanced",
+                summary: "Generic programming using template <typename T> to write type-agnostic algorithms and classes.",
+                content: `
+                    <h2>Generic Programming: Function & Class Templates</h2>
+                    <p>Templates allow writing a single algorithmic blueprint (<code>template &lt;typename T&gt;</code>) that the C++ compiler automatically instantiates for <code>int</code>, <code>double</code>, <code>string</code>, or custom classes at compile time.</p>
+                    
+                    <div class="code-container">
+                        <div class="code-header"><span class="code-lang">template_function.cpp</span><button class="copy-code-btn" onclick="app.copyCode(this)">Copy Code</button></div>
+                        <pre><code class="language-cpp">#include &lt;iostream&gt;
+using namespace std;
+
+template &lt;typename T&gt;
+T getMax(T a, T b) {
+    return (a &gt; b) ? a : b;
+}
+
+int main() {
+    cout &lt;&lt; getMax&lt;int&gt;(10, 45) &lt;&lt; endl;       // Instantiates with int -> 45
+    cout &lt;&lt; getMax&lt;double&gt;(3.14, 9.81) &lt;&lt; endl; // Instantiates with double -> 9.81
+    return 0;
+}</code></pre>
+                    </div>
+                `
+            },
+            {
+                id: "mod-12-3",
+                title: "Types of Templates in C++",
+                level: "Advanced",
+                summary: "Function Templates, Class Templates (<code>template &lt;class T&gt; class Stack</code>), and Variable Templates (C++14).",
+                content: `
+                    <h2>Function vs Class Templates (<code>STL</code> Foundation)</h2>
+                    <p>All Standard Template Library containers (<code>std::vector&lt;T&gt;</code>, <code>std::map&lt;K, V&gt;</code>) are built entirely on Class Templates.</p>
+                `
+            },
+            {
+                id: "mod-12-4",
+                title: "Template pointer in C++",
+                level: "Advanced",
+                summary: "Using template parameter types as pointers inside generic class data structures (<code>T* ptr</code>).",
+                content: `
+                    <h2>Template Pointers (<code>T* data</code>)</h2>
+                    <p>When building dynamic arrays or nodes (<code>Node&lt;T&gt;* next</code>), template pointers allow managing arbitrary data payloads dynamically across heap memory.</p>
+                `
+            },
+            {
+                id: "mod-12-5",
+                title: "What is Dynamic Memory Allocation?",
+                level: "Intermediate",
+                summary: "Allocating memory at runtime on the Heap segment when size is not known at compile time.",
+                content: `
+                    <h2>Stack vs Heap: Why Dynamic Memory Allocation Matters</h2>
+                    <p>When variable sizes are known at compile time, the Stack manages them automatically (<code>RAII</code>). But when data sizes depend on user input (<code>e.g., allocating 1,000,000 nodes at runtime</code>), dynamic allocation on the **Heap** is mandatory.</p>
+                `
+            },
+            {
+                id: "mod-12-6",
+                title: "new and delete Operators",
+                level: "Intermediate",
+                summary: "Allocating heap memory using new / new[] and freeing memory using delete / delete[] without memory leaks.",
+                content: `
+                    <h2>The <code>new</code> and <code>delete</code> Operators</h2>
+                    <p><code>new</code> allocates heap memory and returns a typed pointer while invoking constructor initialization. <code>delete</code> invokes the destructor and frees the heap memory block.</p>
+                    
+                    <div class="code-container">
+                        <div class="code-header"><span class="code-lang">new_delete.cpp</span><button class="copy-code-btn" onclick="app.copyCode(this)">Copy Code</button></div>
+                        <pre><code class="language-cpp">#include &lt;iostream&gt;
+using namespace std;
+
+int main() {
+    // Single int allocation on Heap
+    int* ptr = new int(42);
+    cout &lt;&lt; "Heap Value: " &lt;&lt; *ptr &lt;&lt; endl;
+    delete ptr; // Prevent memory leak!
+    ptr = nullptr;
+
+    // Dynamic Array Allocation on Heap
+    int n = 5;
+    int* arr = new int[n];
+    for(int i=0; i&lt;n; i++) arr[i] = i * 10;
+    
+    delete[] arr; // MUST use delete[] for arrays!
+    arr = nullptr;
+    return 0;
+}</code></pre>
+                    </div>
+                `
+            },
+            {
+                id: "mod-12-7",
+                title: "Difference Between new & malloc() and delete & free()",
+                level: "Advanced",
+                summary: "Why type-safe C++ new/delete automatically invoke constructors/destructors while C malloc()/free() only allocate raw bytes.",
+                content: `
+                    <h2>C++ <code>new/delete</code> vs C <code>malloc/free</code></h2>
+                    <div class="code-container">
+                        <div class="code-header"><span class="code-lang">Comparison Matrix</span></div>
+                        <pre><code>+-----------------------+----------------------------------+------------------------------------+
+| Feature               | new / delete (C++ Operators)     | malloc() / free() (C Library Func) |
++-----------------------+----------------------------------+------------------------------------+
+| Constructor/Destructor| YES! Automatically invokes both  | NO! Only allocates/frees raw bytes |
+| Return Type           | Exact typed pointer (e.g. Box*)  | Raw void* (requires explicit cast) |
+| Size Calculation      | Automatic (compiler knows type)  | Manual (must specify sizeof(Box))  |
+| On Allocation Failure | Throws std::bad_alloc exception  | Returns NULL pointer               |
++-----------------------+----------------------------------+------------------------------------+</code></pre>
+                    </div>
+                `
+            }
+        ]
+    },
+
+    // =========================================================================
+    // MODULE 13: C++ Projects
+    // =========================================================================
+    {
+        id: "mod-13",
+        title: "C++ Projects",
+        category: "oop",
+        subtopics: [
+            {
+                id: "mod-13-1",
+                title: "Bank Management System Project",
+                level: "Advanced",
+                summary: "Production-ready Object-Oriented Banking portal using file handling, account classes, and transaction verification.",
+                content: `
+                    <h2>Project 1: Enterprise Bank Management System</h2>
+                    <p>This project combines <code>class BankAccount</code> encapsulation, persistent <code>fstream</code> binary file storage, and secure PIN/balance validation into a complete CLI banking application.</p>
+                    <p>Check out the <strong>C++ Projects</strong> tab in the top navigation bar to view, copy, and explore the complete 250+ line production source code (<code>bank_management.cpp</code>) and architectural flow diagram!</p>
+                `
+            },
+            {
+                id: "mod-13-2",
+                title: "Hotel Management Billing System Project",
+                level: "Advanced",
+                summary: "Automated room reservation and itemized invoice system featuring room types, taxes, and receipt generation.",
+                content: `
+                    <h2>Project 2: Hotel Management & Billing Portal</h2>
+                    <p>Demonstrates polymorphism, room categorization (<code>Standard</code>, <code>Deluxe</code>, <code>Suite</code>), restaurant order tracking, tax computation, and automated customer receipt output.</p>
+                    <p>Check out the <strong>C++ Projects</strong> tab in the top navigation bar to copy the full working code (<code>hotel_billing.cpp</code>)!</p>
+                `
+            }
+        ]
+    },
+
+    // =========================================================================
+    // MODULE 14: DSA C++ Introduction
+    // =========================================================================
+    {
+        id: "mod-14",
+        title: "DSA C++ Introduction",
+        category: "dsa",
+        subtopics: [
+            {
+                id: "mod-14-1",
+                title: "What is Data Structures with C++?",
+                level: "Beginner",
+                summary: "Systematic organization and storage of data in RAM to enable efficient operations (Search, Insert, Delete, Sort).",
+                content: `
+                    <h2>Entering the World of Data Structures & Algorithms (DSA)</h2>
+                    <p>A <strong>Data Structure</strong> is a specialized format for organizing, processing, retrieving, and storing data in computer memory. An <strong>Algorithm</strong> is a finite sequence of well-defined instructions for solving a specific computational problem.</p>
+                    
+                    <h3>Linear vs Non-Linear Structures</h3>
+                    <ul>
+                        <li><strong>Linear DSA:</strong> Elements arranged sequentially (<code>Array</code>, <code>Stack</code>, <code>Queue</code>, <code>Linked List</code>).</li>
+                        <li><strong>Non-Linear DSA:</strong> Elements connected hierarchically or networked (<code>Trees</code>, <code>BST</code>, <code>Graphs</code>).</li>
+                    </ul>
+                `
+            },
+            {
+                id: "mod-14-2",
+                title: "Data Structure using C++ Syllabus and Prerequisite",
+                level: "Beginner",
+                summary: "Prerequisites checklist: Pointers, Structs/Classes, Dynamic Memory Allocation (new/delete), and Big-O Notation.",
+                content: `
+                    <h2>Prerequisites & Big-O Asymptotic Complexity</h2>
+                    <p>To master Modules 15 through 24, you must be comfortable with pointer dereferencing (<code>*</code> / <code>-&gt;</code>) and heap memory allocation (<code>new</code>/<code>delete</code>).</p>
+                    
+                    <div class="code-container">
+                        <div class="code-header"><span class="code-lang">Big-O Time Complexity Hierarchy</span></div>
+                        <pre><code>O(1)        -> Constant Time (Instant array index access arr[i])
+O(log N)    -> Logarithmic Time (Binary Search, AVL Tree operations)
+O(N)        -> Linear Time (Linear Search, Single loop scans)
+O(N log N)  -> Linearithmic Time (Quick Sort, Merge Sort, Heap Sort)
+O(N^2)      -> Quadratic Time (Bubble Sort, Selection Sort nested loops)</code></pre>
+                    </div>
+                `
+            }
+        ]
+    }
+);

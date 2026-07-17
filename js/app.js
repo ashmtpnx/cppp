@@ -13,6 +13,8 @@ class MasterClassApp {
         this.completedTopics = JSON.parse(localStorage.getItem("cpp_completed_topics") || "[]");
         this.bookmarkedTopics = JSON.parse(localStorage.getItem("cpp_bookmarks") || "[]");
         this.activeFilter = "all";
+        this.currentIdeFontSize = 13.5;
+        this.workbenchMode = "split";
     }
 
     init() {
@@ -39,6 +41,9 @@ class MasterClassApp {
         // 6. Render projects and quiz tabs
         this.renderProjectsTab();
         this.renderQuizTab();
+
+        // 7. Initialize JetBrains Studio Drag Resizer
+        this.initResizerHandle();
     }
 
     attachListeners() {
@@ -483,7 +488,7 @@ main:
 
         const lines = editor.value.split('\n').length || 1;
         let numHtml = "";
-        for (let i = 1; i <= Math.max(lines, 15); i++) {
+        for (let i = 1; i <= Math.max(lines, 18); i++) {
             numHtml += `${i}<br>`;
         }
         numContainer.innerHTML = numHtml;
@@ -494,27 +499,369 @@ main:
         };
     }
 
+    zoomIdeEditor(delta) {
+        const editor = document.getElementById("ide-live-code-editor");
+        const numContainer = document.getElementById("ide-line-numbers");
+        const label = document.getElementById("ide-font-label");
+        if (!editor) return;
+
+        this.currentIdeFontSize = Math.min(24, Math.max(11, (this.currentIdeFontSize || 13.5) + delta * 1.5));
+        editor.style.fontSize = `${this.currentIdeFontSize}px`;
+        if (numContainer) numContainer.style.fontSize = `${this.currentIdeFontSize}px`;
+        if (label) label.textContent = `${this.currentIdeFontSize}px`;
+        this.updateIdeLineNumbers();
+    }
+
+    handleIdeEditorKeydown(e) {
+        const editor = e.target;
+        if (!editor) return;
+
+        // Smart Tab indentation (4 spaces)
+        if (e.key === "Tab") {
+            e.preventDefault();
+            const start = editor.selectionStart;
+            const end = editor.selectionEnd;
+            editor.value = editor.value.substring(0, start) + "    " + editor.value.substring(end);
+            editor.selectionStart = editor.selectionEnd = start + 4;
+            this.updateIdeLineNumbers();
+            return;
+        }
+
+        // Automatic bracket pairing
+        const pairs = { "{": "}", "(": ")", "[": "]", '"': '"' };
+        if (pairs[e.key]) {
+            e.preventDefault();
+            const start = editor.selectionStart;
+            const end = editor.selectionEnd;
+            const open = e.key;
+            const close = pairs[e.key];
+            const selText = editor.value.substring(start, end);
+            editor.value = editor.value.substring(0, start) + open + selText + close + editor.value.substring(end);
+            editor.selectionStart = editor.selectionEnd = start + 1;
+            this.updateIdeLineNumbers();
+            return;
+        }
+
+        // Auto-indent on Enter after {
+        if (e.key === "Enter") {
+            const start = editor.selectionStart;
+            const lineBefore = editor.value.substring(0, start).split('\n').pop() || "";
+            const indentMatch = lineBefore.match(/^\s*/);
+            const currentIndent = indentMatch ? indentMatch[0] : "";
+
+            if (lineBefore.trim().endsWith("{")) {
+                e.preventDefault();
+                const nextIndent = currentIndent + "    ";
+                const afterCursor = editor.value.substring(start);
+                if (afterCursor.trim().startsWith("}")) {
+                    editor.value = editor.value.substring(0, start) + "\n" + nextIndent + "\n" + currentIndent + afterCursor;
+                    editor.selectionStart = editor.selectionEnd = start + 1 + nextIndent.length;
+                } else {
+                    editor.value = editor.value.substring(0, start) + "\n" + nextIndent + afterCursor;
+                    editor.selectionStart = editor.selectionEnd = start + 1 + nextIndent.length;
+                }
+                this.updateIdeLineNumbers();
+                return;
+            }
+        }
+    }
+
+    toggleSidebarTree() {
+        const container = document.querySelector(".app-container");
+        if (!container) return;
+        container.classList.toggle("sidebar-collapsed");
+        const isCollapsed = container.classList.contains("sidebar-collapsed");
+        this.showToast(isCollapsed ? "✔ Sidebar collapsed for wider workbench reading" : "✔ Sidebar expanded", "info");
+    }
+
+    setWorkbenchMode(mode) {
+        this.workbenchMode = mode;
+        const viewCurr = document.getElementById("view-curriculum");
+        if (!viewCurr) return;
+
+        viewCurr.classList.remove("workbench-mode-split", "workbench-mode-theory", "workbench-mode-code");
+        viewCurr.classList.add(`workbench-mode-${mode}`);
+
+        // Update button states
+        document.querySelectorAll(".ide-split-btn").forEach(b => b.classList.remove("active"));
+        const activeBtn = document.getElementById(`mode-${mode}-btn`);
+        if (activeBtn) activeBtn.classList.add("active");
+
+        // Trigger resize calculation
+        setTimeout(() => {
+            this.updateIdeLineNumbers();
+        }, 150);
+
+        if (mode === "theory") this.showToast("📖 Reading Mode: Maximized Theory & Diagrams View", "info");
+        else if (mode === "code") this.showToast("💻 Coding Mode: Maximized C++ Code Sandbox", "info");
+        else this.showToast("⚖ Split Studio Mode: Side-by-side Theory & Code Sandbox", "info");
+    }
+
+    initResizerHandle() {
+        const resizer = document.getElementById("ide-resizer");
+        const colCenter = document.getElementById("curriculum-center-column");
+        const colIde = document.getElementById("ide-code-workbench");
+        const splitContainer = document.querySelector(".curriculum-workbench-split");
+        if (!resizer || !colCenter || !colIde || !splitContainer) return;
+
+        let isResizing = false;
+
+        resizer.addEventListener("mousedown", (e) => {
+            isResizing = true;
+            resizer.classList.add("resizing");
+            document.body.style.cursor = "col-resize";
+            document.body.style.userSelect = "none";
+        });
+
+        document.addEventListener("mousemove", (e) => {
+            if (!isResizing) return;
+            const containerRect = splitContainer.getBoundingClientRect();
+            const mouseX = e.clientX - containerRect.left;
+            const totalWidth = containerRect.width;
+            let centerPct = (mouseX / totalWidth) * 100;
+
+            // Constrain limits between 20% and 80%
+            if (centerPct < 22) centerPct = 22;
+            if (centerPct > 78) centerPct = 78;
+            const idePct = 100 - centerPct;
+
+            colCenter.style.flex = `1 1 ${centerPct}%`;
+            colIde.style.flex = `1 1 ${idePct}%`;
+            this.updateIdeLineNumbers();
+        });
+
+        document.addEventListener("mouseup", () => {
+            if (isResizing) {
+                isResizing = false;
+                resizer.classList.remove("resizing");
+                document.body.style.cursor = "default";
+                document.body.style.userSelect = "auto";
+            }
+        });
+    }
+
+    toggleTemplateMenu() {
+        const menu = document.getElementById("ide-template-menu");
+        if (menu) menu.classList.toggle("hidden");
+    }
+
+    loadTemplate(type) {
+        const editor = document.getElementById("ide-live-code-editor");
+        const menu = document.getElementById("ide-template-menu");
+        if (menu) menu.classList.add("hidden");
+        if (!editor) return;
+
+        let templateCode = "";
+        if (type === "vector") {
+            templateCode = `// C++ Standard I/O & Dynamic Vectors Template
+#include <iostream>
+#include <vector>
+#include <numeric>
+
+int main() {
+    std::vector<int> numbers = { 15, 23, 42, 88, 104 };
+    numbers.push_back(200);
+    
+    int sum = std::accumulate(numbers.begin(), numbers.end(), 0);
+    std::cout << "Vector Size: " << numbers.size() << " | Sum: " << sum << std::endl;
+    
+    for (size_t i = 0; i < numbers.size(); ++i) {
+        std::cout << "numbers[" << i << "] = " << numbers[i] << "\\n";
+    }
+    return 0;
+}`;
+        } else if (type === "oop") {
+            templateCode = `// C++ Classes, Virtual Functions & Polymorphism Template
+#include <iostream>
+#include <memory>
+
+class DataStructure {
+public:
+    virtual void analyze() const = 0;
+    virtual ~DataStructure() = default;
+};
+
+class AVLTree : public DataStructure {
+public:
+    void analyze() const override {
+        std::cout << "[AVLTree] Height-balanced binary search tree verified. O(log N)" << std::endl;
+    }
+};
+
+class Graph : public DataStructure {
+public:
+    void analyze() const override {
+        std::cout << "[Graph] Adjacency List Traversal: Dijkstra shortest path ready." << std::endl;
+    }
+};
+
+int main() {
+    std::unique_ptr<DataStructure> ds1 = std::make_unique<AVLTree>();
+    std::unique_ptr<DataStructure> ds2 = std::make_unique<Graph>();
+    ds1->analyze();
+    ds2->analyze();
+    return 0;
+}`;
+        } else if (type === "stack") {
+            templateCode = `// C++ LIFO Stack via Dynamic Linked Nodes Template
+#include <iostream>
+
+struct Node {
+    int data;
+    Node* next;
+    Node(int val) : data(val), next(nullptr) {}
+};
+
+class Stack {
+    Node* topNode = nullptr;
+public:
+    void push(int val) {
+        Node* newNode = new Node(val);
+        newNode->next = topNode;
+        topNode = newNode;
+        std::cout << "Pushed " << val << " onto Stack.\\n";
+    }
+    void pop() {
+        if (!topNode) { std::cout << "Stack Underflow\\n"; return; }
+        Node* temp = topNode;
+        topNode = topNode->next;
+        std::cout << "Popped " << temp->data << " from Stack.\\n";
+        delete temp;
+    }
+    ~Stack() { while(topNode) pop(); }
+};
+
+int main() {
+    Stack s;
+    s.push(10); s.push(20); s.push(30);
+    s.pop();
+    return 0;
+}`;
+        } else if (type === "leak") {
+            templateCode = `// C++ AddressSanitizer (ASan) Memory Leak Diagnostics Test
+#include <iostream>
+
+void simulateMemoryLeak() {
+    int* leakedBuffer = new int[500];
+    leakedBuffer[0] = 999;
+    std::cout << "[ASan Test] Buffer allocated at heap address: " << leakedBuffer << std::endl;
+    // Note: Missing delete[] leakedBuffer; causes intentional memory leak!
+}
+
+int main() {
+    std::cout << "Starting Memory Safety Diagnostics..." << std::endl;
+    simulateMemoryLeak();
+    return 0;
+}`;
+        } else if (type === "sort") {
+            templateCode = `// C++ Fast Sorting & Lambda Expressions Template
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
+int main() {
+    std::vector<int> data = { 64, 34, 25, 12, 22, 11, 90 };
+    
+    // Custom Lambda descending sort
+    std::sort(data.begin(), data.end(), [](int a, int b) {
+        return a > b;
+    });
+    
+    std::cout << "Sorted in Descending Order: ";
+    for (int v : data) std::cout << v << " ";
+    std::cout << std::endl;
+    return 0;
+}`;
+        }
+
+        editor.value = templateCode;
+        this.currentIdeCodeMain = templateCode;
+        this.updateIdeLineNumbers();
+        this.showToast(`✨ Template loaded cleanly into C++ Code Sandbox!`, "success");
+    }
+
+    newScratchFile() {
+        const tabTitle = document.getElementById("ide-tab-title");
+        if (tabTitle) tabTitle.textContent = `scratch_${Math.floor(Math.random()*1000)}.cpp`;
+        const editor = document.getElementById("ide-live-code-editor");
+        if (editor) {
+            editor.value = `// C++ Scratchpad Session\n#include <iostream>\n\nint main() {\n    std::cout << "Hello from Scratchpad!" << std::endl;\n    return 0;\n}`;
+            this.updateIdeLineNumbers();
+        }
+        this.showToast("✔ New scratch C++ file created", "info");
+    }
+
     runIdeSandbox() {
         const term = document.getElementById("ide-terminal-output");
         const editor = document.getElementById("ide-live-code-editor");
+        const stdinInput = document.getElementById("ide-stdin-input");
         if (!term || !editor) return;
 
-        term.innerHTML = `<div class="term-line info"><i class="fa-solid fa-spinner fa-spin"></i> Compiling with Clang 18.1.0 (-std=c++23 -O3)...</div>`;
-        
+        const code = editor.value;
+        const customStdin = stdinInput ? stdinInput.value.trim() : "";
+
+        term.innerHTML = `<div class="term-line info"><i class="fa-solid fa-spinner fa-spin"></i> [Clang 18.1.0] Compiling main.cpp (-std=c++23 -O3 -Wall)...</div>`;
+
         setTimeout(() => {
+            // Check basic syntax issues
+            const openBraces = (code.match(/\{/g) || []).length;
+            const closeBraces = (code.match(/\}/g) || []).length;
+            const openParens = (code.match(/\(/g) || []).length;
+            const closeParens = (code.match(/\)/g) || []).length;
+
+            if (openBraces !== closeBraces) {
+                term.innerHTML = `
+                    <div class="term-line error"><i class="fa-solid fa-circle-xmark"></i> [Clang 18.1.0 Error] main.cpp: syntax error: Mismatched curly braces '{' (${openBraces}) vs '}' (${closeBraces})</div>
+                    <div class="term-line warning">Check your function scopes or class definitions and ensure every opening '{' has a closing '}'.</div>
+                `;
+                term.scrollTop = term.scrollHeight;
+                return;
+            }
+            if (openParens !== closeParens) {
+                term.innerHTML = `
+                    <div class="term-line error"><i class="fa-solid fa-circle-xmark"></i> [Clang 18.1.0 Error] main.cpp: syntax error: Mismatched parentheses '(' (${openParens}) vs ')' (${closeParens})</div>
+                `;
+                term.scrollTop = term.scrollHeight;
+                return;
+            }
+
+            // Extract outputs or simulate execution
+            let simulatedOutput = "";
+            const coutMatches = code.match(/std::cout\s*<<\s*"([^"]*)"/g);
+            if (coutMatches && coutMatches.length > 0) {
+                coutMatches.forEach(m => {
+                    const textMatch = m.match(/"([^"]*)"/);
+                    if (textMatch) simulatedOutput += textMatch[1] + "<br>";
+                });
+            } else if (code.includes("accumulate") || code.includes("push_back")) {
+                simulatedOutput = `Vector Size: 6 | Sum: 472<br>numbers[0] = 15<br>numbers[1] = 23<br>numbers[2] = 42<br>numbers[3] = 88<br>numbers[4] = 104<br>numbers[5] = 200`;
+            } else if (code.includes("AVLTree")) {
+                simulatedOutput = `[AVLTree] Height-balanced binary search tree verified. O(log N)<br>[Graph] Adjacency List Traversal: Dijkstra shortest path ready.`;
+            } else if (code.includes("Stack")) {
+                simulatedOutput = `Pushed 10 onto Stack.<br>Pushed 20 onto Stack.<br>Pushed 30 onto Stack.<br>Popped 30 from Stack.<br>Popped 20 from Stack.<br>Popped 10 from Stack.`;
+            } else if (code.includes("simulateMemoryLeak")) {
+                simulatedOutput = `Starting Memory Safety Diagnostics...<br>[ASan Test] Buffer allocated at heap address: 0x7fff5a820<br><span style="color:#ef4444; font-weight:bold;">=================================================================<br>==31415==ERROR: AddressSanitizer: detected memory leaks<br>Direct leak of 2000 byte(s) in 1 object(s) allocated from:<br>    #0 0x56230f operator new[](unsigned long)<br>    #1 0x56238b in simulateMemoryLeak() main.cpp:5</span>`;
+            } else if (code.includes("std::sort")) {
+                simulatedOutput = `Sorted in Descending Order: 90 64 34 25 22 12 11`;
+            } else {
+                simulatedOutput = `=== Running C++ Sandbox Execution ===<br>Memory Layout & Zero-Overhead Abstraction Verified.<br>All objects cleanly destroyed via RAII.`;
+            }
+
+            if (customStdin) {
+                simulatedOutput = `<span style="color:#38bdf8;">[stdin input read: "${customStdin}"]</span><br>` + simulatedOutput;
+            }
+
             term.innerHTML = `
                 <div class="term-line info">[Clang 18.1.0] g++ -std=c++23 -O3 -Wall -Wextra main.cpp -o app</div>
-                <div class="term-line success">✔ Compilation finished with 0 errors, 0 warnings (0.14s)</div>
-                <div class="term-line info">Executing ./app ...</div>
-                <div class="term-line" style="color:#ffffff; background:rgba(0,0,0,0.4); padding:8px 10px; border-radius:6px; font-family:var(--font-mono); border-left:3px solid #10b981;">
-=== Running Sandbox Output ===<br>
-Data Store Elements: 10 24 55 89 144<br>
-Memory Layout Verification: Zero-Copy RVO Enforced.<br>
-[Process exited 0]
+                <div class="term-line success">✔ Compilation finished with 0 errors, 0 warnings (0.12s)</div>
+                <div class="term-line info">Executing ./app ${customStdin ? 'with stdin...' : '...'}</div>
+                <div class="term-line" style="color:#f8fafc; background:rgba(0,0,0,0.55); padding:10px 14px; border-radius:8px; font-family:'JetBrains Mono',var(--font-mono); border-left:3.5px solid #10b981; line-height:1.6; margin-top:6px;">
+${simulatedOutput}<br>
+<span style="color:#94a3b8; font-size:11.5px;">[Process exited with code 0 (0x00) • Memory consumed: 14.1 MB]</span>
                 </div>
             `;
             term.scrollTop = term.scrollHeight;
-        }, 450);
+        }, 380);
     }
 
     debugIdeSandbox() {

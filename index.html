@@ -119,13 +119,30 @@
                     <div class="ide-tabs-bar" id="ide-tabs-bar">
                         <div class="ide-tab active" id="current-ide-tab"><i class="fa-solid fa-file-code" style="color:#38bdf8;"></i> <span id="ide-tab-title">1.2 History of C++.cpp</span> <i class="fa-solid fa-xmark tab-close"></i></div>
                         <div class="ide-tab"><i class="fa-solid fa-book" style="color:#a855f7;"></i> <span>cpp_reference.hpp</span></div>
-                        <div class="ide-tab-add" title="New Scratch File"><i class="fa-solid fa-plus"></i></div>
+                        <div class="ide-tab-add" title="New Scratch File" onclick="app.newScratchFile()"><i class="fa-solid fa-plus"></i></div>
+                    </div>
+                    <div class="ide-layout-controls">
+                        <button class="ide-mode-pill" onclick="app.toggleSidebarTree()" title="Toggle Sidebar Navigation Tree (Ctrl+B)"><i class="fa-solid fa-bars"></i> Toggle Tree</button>
+                        <div class="ide-split-toggle-group">
+                            <button class="ide-split-btn active" id="mode-split-btn" onclick="app.setWorkbenchMode('split')" title="Side-by-Side Split View"><i class="fa-solid fa-table-columns"></i> Split</button>
+                            <button class="ide-split-btn" id="mode-theory-btn" onclick="app.setWorkbenchMode('theory')" title="Maximize Theory & Diagrams View"><i class="fa-solid fa-book-open"></i> Theory Only</button>
+                            <button class="ide-split-btn" id="mode-code-btn" onclick="app.setWorkbenchMode('code')" title="Maximize C++ Code Sandbox & Terminal"><i class="fa-solid fa-code"></i> Code Only</button>
+                        </div>
                     </div>
                     <div class="ide-toolbar-actions">
-                        <span class="ide-compiler-pill"><i class="fa-solid fa-microchip"></i> Clang 18.1.0 (x86_64-pc-linux-gnu)</span>
+                        <span class="ide-compiler-pill"><i class="fa-solid fa-microchip"></i> Clang 18.1 (-O3)</span>
+                        <div class="ide-template-dropdown-wrapper">
+                            <button class="ide-tool-btn template-btn" onclick="app.toggleTemplateMenu()" title="Load C++ Code Template"><i class="fa-solid fa-wand-magic-sparkles"></i> Templates <i class="fa-solid fa-chevron-down" style="font-size:10px;"></i></button>
+                            <div class="ide-template-menu hidden" id="ide-template-menu">
+                                <div class="template-item" onclick="app.loadTemplate('vector')"><i class="fa-solid fa-list-ol"></i> Standard I/O & Vectors</div>
+                                <div class="template-item" onclick="app.loadTemplate('oop')"><i class="fa-solid fa-cube"></i> Classes & Virtual Functions</div>
+                                <div class="template-item" onclick="app.loadTemplate('stack')"><i class="fa-solid fa-layer-group"></i> LIFO Stack with Pointers</div>
+                                <div class="template-item" onclick="app.loadTemplate('leak')"><i class="fa-solid fa-bug"></i> Memory Leak & ASan Test</div>
+                                <div class="template-item" onclick="app.loadTemplate('sort')"><i class="fa-solid fa-bolt"></i> Fast Sorting & Lambdas</div>
+                            </div>
+                        </div>
                         <button class="ide-tool-btn run-toolbar-btn" onclick="app.runIdeSandbox()" title="Execute C++ Code (F5)"><i class="fa-solid fa-play"></i> Run Sandbox</button>
                         <button class="ide-tool-btn debug-toolbar-btn" onclick="app.debugIdeSandbox()" title="Inspect Memory & VTable (F9)"><i class="fa-solid fa-bug"></i> Debug AST</button>
-                        <button class="ide-tool-btn build-toolbar-btn" onclick="app.buildIdeSandbox()" title="Compile -std=c++23 -O3"><i class="fa-solid fa-gear"></i> Build C++23</button>
                     </div>
                 </div>
 
@@ -259,6 +276,11 @@
                 </div> <!-- End .subtopic-navigation -->
                     </div> <!-- End .curriculum-center-column (Column 2) -->
 
+                    <!-- Interactive Drag Resizer Grip between Theory & Code panels -->
+                    <div class="ide-resizer-handle" id="ide-resizer" title="Drag left/right to resize Theory and Code columns">
+                        <div class="resizer-grip"><i class="fa-solid fa-grip-lines-vertical"></i></div>
+                    </div>
+
                     <!-- Column 3: JetBrains IDE C++ Code Sandbox & Terminal Debugger Workbench -->
                     <div class="ide-workbench-column" id="ide-code-workbench">
                         <div class="ide-panel-header">
@@ -268,22 +290,35 @@
                                 <button class="ide-panel-tab" onclick="app.switchIdeCodeTab('ast')"><i class="fa-solid fa-memory" style="color:#a855f7;"></i> memory_vtable.asm</button>
                             </div>
                             <div class="ide-panel-actions">
+                                <div class="ide-font-zoom">
+                                    <button class="ide-zoom-btn" onclick="app.zoomIdeEditor(-1)" title="Decrease font size"><i class="fa-solid fa-minus"></i></button>
+                                    <span id="ide-font-label">13.5px</span>
+                                    <button class="ide-zoom-btn" onclick="app.zoomIdeEditor(1)" title="Increase font size"><i class="fa-solid fa-plus"></i></button>
+                                </div>
                                 <button class="ide-action-btn run-btn" onclick="app.runIdeSandbox()" title="Run Code (F5)"><i class="fa-solid fa-play"></i> Run</button>
                                 <button class="ide-action-btn debug-btn" onclick="app.debugIdeSandbox()" title="Analyze AST/Memory (F9)"><i class="fa-solid fa-bug"></i> Debug</button>
                                 <button class="ide-action-btn copy-btn" onclick="app.copyIdeCode()" title="Copy Code to Clipboard"><i class="fa-regular fa-copy"></i></button>
                             </div>
                         </div>
-                        <div class="ide-editor-container">
+                        <div class="ide-editor-container" id="ide-editor-container">
                             <div class="ide-line-numbers" id="ide-line-numbers">1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16<br>17<br>18<br>19<br>20</div>
-                            <textarea id="ide-live-code-editor" class="ide-code-textarea" spellcheck="false" oninput="app.updateIdeLineNumbers()"></textarea>
+                            <textarea id="ide-live-code-editor" class="ide-code-textarea" spellcheck="false" oninput="app.updateIdeLineNumbers()" onkeydown="app.handleIdeEditorKeydown(event)"></textarea>
                         </div>
-                        <div class="ide-terminal-panel">
+                        <div class="ide-terminal-panel" id="ide-terminal-panel">
                             <div class="ide-terminal-header">
                                 <span><i class="fa-solid fa-terminal"></i> Terminal / Compilation Output (Clang 18.1 -std=c++23)</span>
-                                <button class="ide-term-clear" onclick="app.clearIdeTerminal()"><i class="fa-solid fa-trash-can"></i> Clear</button>
+                                <div style="display:flex; gap:8px; align-items:center;">
+                                    <button class="ide-term-clear" onclick="app.clearIdeTerminal()"><i class="fa-solid fa-trash-can"></i> Clear</button>
+                                </div>
                             </div>
                             <div class="ide-terminal-body" id="ide-terminal-output">
                                 <div class="term-line success">✔ Clang 18.1.0 Ready. Select a subtopic or click [▶ Run] to execute C++ code live.</div>
+                            </div>
+                            <!-- Interactive Standard Input (stdin) Row -->
+                            <div class="ide-terminal-stdin-row">
+                                <span class="stdin-prompt"><i class="fa-solid fa-angle-right"></i> stdin:</span>
+                                <input type="text" id="ide-stdin-input" placeholder="Optional interactive inputs (e.g. 42 100 'hello') passed to std::cin..." onkeydown="if(event.key==='Enter')app.runIdeSandbox()" />
+                                <button class="stdin-send-btn" onclick="app.runIdeSandbox()"><i class="fa-solid fa-paper-plane"></i> Send & Run</button>
                             </div>
                         </div>
                     </div> <!-- End .ide-workbench-column (Column 3) -->

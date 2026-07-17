@@ -2410,6 +2410,547 @@ body.light-theme #theme-toggle .dark-icon { display: none; }
    JETBRAINS IDE WORKBENCH (3-COLUMN STUDIO SPLIT & CODE SANDBOX)
    ========================================================================== */
 .ide-workspace-header {
+    background: linear-gradient(180deg, #1f2025 0%, #15161a 100%);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.5);
+    z-index: 50;
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 46px;
+    padding: 0 16px;
+    font-family: var(--font-mono);
+    user-select: none;
+}
+
+.ide-tabs-bar {
+    display: flex;
+    gap: 3px;
+    height: 100%;
+    align-items: flex-end;
+}
+
+.ide-tab {
+    background: rgba(255, 255, 255, 0.03);
+    color: #94a3b8;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-bottom: none;
+    border-radius: 8px 8px 0 0;
+    padding: 8px 16px;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.ide-tab:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: #f8fafc;
+}
+
+.ide-tab.active {
+    background: #18181c;
+    color: #ffffff;
+    font-weight: 700;
+    border-color: rgba(255, 255, 255, 0.12);
+    border-top: 2.5px solid #38bdf8;
+    box-shadow: 0 -4px 18px rgba(56, 189, 248, 0.25);
+}
+
+.ide-tab-add {
+    color: #64748b;
+    padding: 8px 12px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: color 0.2s;
+}
+.ide-tab-add:hover { color: #38bdf8; }
+
+.ide-layout-controls {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.ide-mode-pill {
+    background: rgba(56, 189, 248, 0.12);
+    border: 1px solid rgba(56, 189, 248, 0.3);
+    color: #38bdf8;
+    border-radius: 6px;
+    padding: 5px 12px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s ease;
+}
+.ide-mode-pill:hover {
+    background: #38bdf8;
+    color: #000000;
+    box-shadow: 0 0 16px rgba(56, 189, 248, 0.45);
+}
+
+.ide-split-toggle-group {
+    display: flex;
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    padding: 2px;
+}
+
+.ide-split-btn {
+    background: transparent;
+    border: none;
+    color: #94a3b8;
+    font-size: 11.5px;
+    font-weight: 600;
+    padding: 5px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.ide-split-btn:hover { color: #ffffff; }
+.ide-split-btn.active {
+    background: rgba(255, 255, 255, 0.14);
+    color: #ffffff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+}
+
+.ide-toolbar-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.ide-compiler-pill {
+    background: rgba(168, 85, 247, 0.1);
+    border: 1px solid rgba(168, 85, 247, 0.3);
+    color: #d8b4fe;
+    font-size: 11.5px;
+    padding: 5px 10px;
+    border-radius: 6px;
+    font-weight: 600;
+}
+
+.ide-template-dropdown-wrapper {
+    position: relative;
+}
+
+.ide-tool-btn {
+    background: #2b2d32;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #e2e8f0;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 700;
+    padding: 5px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.ide-tool-btn:hover {
+    background: #393b40;
+    border-color: #38bdf8;
+    color: #ffffff;
+}
+
+.template-btn {
+    background: linear-gradient(135deg, rgba(168, 85, 247, 0.2), rgba(56, 189, 248, 0.2));
+    border-color: rgba(168, 85, 247, 0.45);
+    color: #e879f9;
+}
+.template-btn:hover {
+    background: linear-gradient(135deg, #a855f7, #38bdf8);
+    color: #000000;
+    box-shadow: 0 0 18px rgba(168, 85, 247, 0.5);
+}
+
+.ide-template-menu {
+    position: absolute;
+    top: 38px;
+    right: 0;
+    background: rgba(24, 24, 28, 0.98);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(56, 189, 248, 0.35);
+    border-radius: 10px;
+    width: 240px;
+    box-shadow: 0 14px 38px rgba(0, 0, 0, 0.75);
+    z-index: 200;
+    overflow: hidden;
+    padding: 6px 0;
+}
+
+.template-item {
+    padding: 10px 16px;
+    font-size: 12.5px;
+    color: #cbd5e1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.2s ease;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+}
+.template-item:last-child { border-bottom: none; }
+.template-item:hover {
+    background: rgba(56, 189, 248, 0.15);
+    color: #38bdf8;
+    padding-left: 20px;
+}
+
+.run-toolbar-btn { background: rgba(16, 185, 129, 0.18); border-color: rgba(16, 185, 129, 0.45); color: #10b981; }
+.run-toolbar-btn:hover { background: #10b981; color: #000000; box-shadow: 0 0 18px rgba(16, 185, 129, 0.5); }
+
+.debug-toolbar-btn { background: rgba(249, 115, 22, 0.18); border-color: rgba(249, 115, 22, 0.45); color: #f97316; }
+.debug-toolbar-btn:hover { background: #f97316; color: #000000; box-shadow: 0 0 18px rgba(249, 115, 22, 0.5); }
+
+/* --- 3-Column Split Workbench & Resizer Handle --- */
+.curriculum-workbench-split {
+    display: flex;
+    width: 100%;
+    height: calc(100vh - 146px);
+    overflow: hidden;
+    background: #121214;
+    position: relative;
+}
+
+.curriculum-center-column {
+    flex: 1 1 56%;
+    height: 100%;
+    overflow-y: auto;
+    padding: 28px 40px 80px 40px;
+    border-right: none;
+    background: radial-gradient(circle at top right, rgba(56, 189, 248, 0.03), transparent 60%), #141417;
+    transition: flex 0.2s ease;
+}
+
+.ide-resizer-handle {
+    width: 8px;
+    background: #1c1d22;
+    border-left: 1px solid rgba(255, 255, 255, 0.05);
+    border-right: 1px solid rgba(255, 255, 255, 0.05);
+    cursor: col-resize;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #475569;
+    transition: all 0.2s ease;
+    user-select: none;
+    z-index: 10;
+}
+
+.ide-resizer-handle:hover, .ide-resizer-handle.resizing {
+    background: #38bdf8;
+    color: #ffffff;
+    box-shadow: 0 0 15px rgba(56, 189, 248, 0.6);
+}
+
+.resizer-grip { font-size: 11px; }
+
+.ide-workbench-column {
+    flex: 1 1 44%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    background: #18181c;
+    overflow: hidden;
+    position: relative;
+    transition: flex 0.2s ease;
+}
+
+.ide-panel-header {
+    background: #1f2026;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 14px;
+    min-height: 44px;
+}
+
+.ide-panel-tabs {
+    display: flex;
+    gap: 6px;
+}
+
+.ide-panel-tab {
+    background: transparent;
+    border: none;
+    color: #94a3b8;
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    font-weight: 600;
+    padding: 5px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s;
+}
+
+.ide-panel-tab:hover { background: rgba(255, 255, 255, 0.06); color: #ffffff; }
+.ide-panel-tab.active { background: #18181c; color: #ffffff; border: 1px solid rgba(255, 255, 255, 0.08); }
+
+.ide-panel-actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.ide-font-zoom {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background: rgba(0, 0, 0, 0.35);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 6px;
+    padding: 2px 6px;
+    margin-right: 6px;
+}
+
+.ide-zoom-btn {
+    background: transparent;
+    border: none;
+    color: #94a3b8;
+    font-size: 11px;
+    cursor: pointer;
+    padding: 2px 5px;
+    border-radius: 4px;
+    transition: all 0.2s;
+}
+.ide-zoom-btn:hover { color: #38bdf8; background: rgba(255, 255, 255, 0.1); }
+#ide-font-label { font-size: 11px; color: #cbd5e1; font-family: var(--font-mono); min-width: 40px; text-align: center; }
+
+.ide-action-btn {
+    background: #1f2026;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: #e2e8f0;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 700;
+    padding: 5px 11px;
+    border-radius: 5px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    transition: all 0.2s;
+}
+.ide-action-btn.run-btn:hover { border-color: #10b981; color: #10b981; }
+.ide-action-btn.debug-btn:hover { border-color: #f97316; color: #f97316; }
+
+.ide-editor-container {
+    flex: 1;
+    display: flex;
+    background: #141417;
+    overflow: hidden;
+    position: relative;
+    font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+}
+
+.ide-line-numbers {
+    width: 48px;
+    background: #1a1b20;
+    color: #475569;
+    padding: 16px 10px;
+    text-align: right;
+    font-size: 13.5px;
+    line-height: 1.6;
+    border-right: 1px solid rgba(255, 255, 255, 0.05);
+    user-select: none;
+    font-family: 'JetBrains Mono', 'Consolas', monospace;
+}
+
+.ide-code-textarea {
+    flex: 1;
+    background: transparent;
+    color: #f8fafc;
+    border: none;
+    padding: 16px 20px;
+    font-family: 'JetBrains Mono', 'Consolas', monospace;
+    font-size: 13.5px;
+    line-height: 1.6;
+    resize: none;
+    outline: none;
+    white-space: pre;
+    overflow: auto;
+    caret-color: #38bdf8;
+}
+
+/* --- Terminal Panel & Interactive Stdin --- */
+.ide-terminal-panel {
+    height: 225px;
+    background: #0d0e10;
+    border-top: 2px solid rgba(56, 189, 248, 0.35);
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 -6px 25px rgba(0, 0, 0, 0.6);
+}
+
+.ide-terminal-header {
+    background: #18181c;
+    padding: 8px 16px;
+    font-size: 12px;
+    color: #94a3b8;
+    font-family: var(--font-mono);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.ide-term-clear {
+    background: transparent;
+    border: none;
+    color: #64748b;
+    cursor: pointer;
+    font-size: 11.5px;
+    transition: color 0.2s;
+}
+.ide-term-clear:hover { color: #f8fafc; }
+
+.ide-terminal-body {
+    flex: 1;
+    padding: 14px 18px;
+    overflow-y: auto;
+    font-family: 'JetBrains Mono', 'Consolas', monospace;
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+.term-line { margin-bottom: 6px; display: flex; align-items: flex-start; gap: 8px; }
+.term-line.success { color: #10b981; }
+.term-line.warning { color: #f97316; }
+.term-line.error { color: #ef4444; }
+.term-line.info { color: #38bdf8; }
+
+.ide-terminal-stdin-row {
+    background: rgba(255, 255, 255, 0.02);
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    padding: 8px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.stdin-prompt {
+    color: #38bdf8;
+    font-weight: 700;
+    font-size: 12.5px;
+    font-family: var(--font-mono);
+}
+
+#ide-stdin-input {
+    flex: 1;
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+    padding: 6px 12px;
+    color: #ffffff;
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    outline: none;
+    transition: border 0.2s;
+}
+#ide-stdin-input:focus {
+    border-color: #38bdf8;
+    box-shadow: 0 0 12px rgba(56, 189, 248, 0.35);
+}
+
+.stdin-send-btn {
+    background: rgba(56, 189, 248, 0.2);
+    border: 1px solid #38bdf8;
+    color: #38bdf8;
+    border-radius: 6px;
+    padding: 6px 14px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s;
+}
+.stdin-send-btn:hover {
+    background: #38bdf8;
+    color: #000000;
+    box-shadow: 0 0 15px rgba(56, 189, 248, 0.5);
+}
+
+/* --- Layout Override Classes (View Modes & Sidebar Toggle) --- */
+.workbench-mode-theory .curriculum-center-column {
+    flex: 1 1 100% !important;
+}
+.workbench-mode-theory .ide-workbench-column,
+.workbench-mode-theory .ide-resizer-handle {
+    display: none !important;
+}
+
+.workbench-mode-code .ide-workbench-column {
+    flex: 1 1 100% !important;
+}
+.workbench-mode-code .curriculum-center-column,
+.workbench-mode-code .ide-resizer-handle {
+    display: none !important;
+}
+
+.sidebar-collapsed .sidebar {
+    width: 0 !important;
+    min-width: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    border-right: none !important;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.sidebar-collapsed .content-area {
+    width: 100% !important;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.ide-status-bar {
+    background: #1f2025;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    height: 26px;
+    padding: 0 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    color: #94a3b8;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+}
+
+.ide-status-left, .ide-status-right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.ide-status-item { display: flex; align-items: center; gap: 6px; }
+.ide-status-item.success { color: #10b981; font-weight: 700; }
+.ide-workspace-header {
     background: #1e1f22;
     border-bottom: 1px solid #393b40;
     display: flex;

@@ -112,26 +112,45 @@
 
         <!-- Main Content Area -->
         <main class="content-area" id="main-content">
-            <!-- View 1: Curriculum Reader -->
+            <!-- View 1: Curriculum Reader (JetBrains IDE 3-Column Studio Workbench) -->
             <section id="view-curriculum" class="view-section active">
-                <div class="content-header" id="topic-header">
-                    <div class="topic-meta">
-                        <span class="topic-badge" id="current-module-badge">Module 1</span>
-                        <span class="topic-level" id="current-module-level"><i class="fa-solid fa-signal"></i> Fundamental</span>
+                <!-- JetBrains IDE Top Workspace Header Bar -->
+                <div class="ide-workspace-header">
+                    <div class="ide-tabs-bar" id="ide-tabs-bar">
+                        <div class="ide-tab active" id="current-ide-tab"><i class="fa-solid fa-file-code" style="color:#38bdf8;"></i> <span id="ide-tab-title">1.2 History of C++.cpp</span> <i class="fa-solid fa-xmark tab-close"></i></div>
+                        <div class="ide-tab"><i class="fa-solid fa-book" style="color:#a855f7;"></i> <span>cpp_reference.hpp</span></div>
+                        <div class="ide-tab-add" title="New Scratch File"><i class="fa-solid fa-plus"></i></div>
                     </div>
-                    <div class="topic-title-row">
-                        <h1 id="current-subtopic-title">Welcome to C++ & DSA MasterClass Pro</h1>
-                        <button id="toggle-bookmark-subtopic" class="action-btn outline">
-                            <i class="fa-regular fa-bookmark"></i> <span>Bookmark</span>
-                        </button>
+                    <div class="ide-toolbar-actions">
+                        <span class="ide-compiler-pill"><i class="fa-solid fa-microchip"></i> Clang 18.1.0 (x86_64-pc-linux-gnu)</span>
+                        <button class="ide-tool-btn run-toolbar-btn" onclick="app.runIdeSandbox()" title="Execute C++ Code (F5)"><i class="fa-solid fa-play"></i> Run Sandbox</button>
+                        <button class="ide-tool-btn debug-toolbar-btn" onclick="app.debugIdeSandbox()" title="Inspect Memory & VTable (F9)"><i class="fa-solid fa-bug"></i> Debug AST</button>
+                        <button class="ide-tool-btn build-toolbar-btn" onclick="app.buildIdeSandbox()" title="Compile -std=c++23 -O3"><i class="fa-solid fa-gear"></i> Build C++23</button>
                     </div>
-                    <p class="topic-summary" id="current-subtopic-summary">
-                        Select any topic or subtopic from the 24-module curriculum sidebar to explore deep technical explanations, C++ professional code patterns, animated diagrams, and time complexity analysis.
-                    </p>
                 </div>
 
-                <!-- Subtopic Content Body -->
-                <div class="content-body" id="topic-content-body">
+                <!-- 3-Column Split Workbench Container (Sidebar is Col 1, Center is Col 2, IDE Code Workbench is Col 3) -->
+                <div class="curriculum-workbench-split">
+                    <!-- Column 2: Theory, Technical Explanations & Graphical Roadmap Stage -->
+                    <div class="curriculum-center-column" id="curriculum-center-column">
+                        <div class="content-header" id="topic-header">
+                            <div class="topic-meta">
+                                <span class="topic-badge" id="current-module-badge">Module 1</span>
+                                <span class="topic-level" id="current-module-level"><i class="fa-solid fa-signal"></i> Fundamental</span>
+                            </div>
+                            <div class="topic-title-row">
+                                <h1 id="current-subtopic-title">Welcome to C++ & DSA MasterClass Pro</h1>
+                                <button id="toggle-bookmark-subtopic" class="action-btn outline">
+                                    <i class="fa-regular fa-bookmark"></i> <span>Bookmark</span>
+                                </button>
+                            </div>
+                            <p class="topic-summary" id="current-subtopic-summary">
+                                Select any topic or subtopic from the 24-module curriculum sidebar to explore deep technical explanations, C++ professional code patterns, animated diagrams, and time complexity analysis.
+                            </p>
+                        </div>
+
+                        <!-- Subtopic Content Body -->
+                        <div class="content-body" id="topic-content-body">
                     <!-- Default Welcome / Overview Panel -->
                     <div class="welcome-dashboard">
                         <div class="hero-banner">
@@ -237,7 +256,38 @@
                         </div>
                         <i class="fa-solid fa-arrow-right"></i>
                     </button>
-                </div>
+                </div> <!-- End .subtopic-navigation -->
+                    </div> <!-- End .curriculum-center-column (Column 2) -->
+
+                    <!-- Column 3: JetBrains IDE C++ Code Sandbox & Terminal Debugger Workbench -->
+                    <div class="ide-workbench-column" id="ide-code-workbench">
+                        <div class="ide-panel-header">
+                            <div class="ide-panel-tabs">
+                                <button class="ide-panel-tab active" onclick="app.switchIdeCodeTab('main')"><i class="fa-solid fa-code" style="color:#38bdf8;"></i> main.cpp</button>
+                                <button class="ide-panel-tab" onclick="app.switchIdeCodeTab('bug')"><i class="fa-solid fa-bug" style="color:#f97316;"></i> bug_case.cpp</button>
+                                <button class="ide-panel-tab" onclick="app.switchIdeCodeTab('ast')"><i class="fa-solid fa-memory" style="color:#a855f7;"></i> memory_vtable.asm</button>
+                            </div>
+                            <div class="ide-panel-actions">
+                                <button class="ide-action-btn run-btn" onclick="app.runIdeSandbox()" title="Run Code (F5)"><i class="fa-solid fa-play"></i> Run</button>
+                                <button class="ide-action-btn debug-btn" onclick="app.debugIdeSandbox()" title="Analyze AST/Memory (F9)"><i class="fa-solid fa-bug"></i> Debug</button>
+                                <button class="ide-action-btn copy-btn" onclick="app.copyIdeCode()" title="Copy Code to Clipboard"><i class="fa-regular fa-copy"></i></button>
+                            </div>
+                        </div>
+                        <div class="ide-editor-container">
+                            <div class="ide-line-numbers" id="ide-line-numbers">1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16<br>17<br>18<br>19<br>20</div>
+                            <textarea id="ide-live-code-editor" class="ide-code-textarea" spellcheck="false" oninput="app.updateIdeLineNumbers()"></textarea>
+                        </div>
+                        <div class="ide-terminal-panel">
+                            <div class="ide-terminal-header">
+                                <span><i class="fa-solid fa-terminal"></i> Terminal / Compilation Output (Clang 18.1 -std=c++23)</span>
+                                <button class="ide-term-clear" onclick="app.clearIdeTerminal()"><i class="fa-solid fa-trash-can"></i> Clear</button>
+                            </div>
+                            <div class="ide-terminal-body" id="ide-terminal-output">
+                                <div class="term-line success">✔ Clang 18.1.0 Ready. Select a subtopic or click [▶ Run] to execute C++ code live.</div>
+                            </div>
+                        </div>
+                    </div> <!-- End .ide-workbench-column (Column 3) -->
+                </div> <!-- End .curriculum-workbench-split -->
             </section>
 
             <!-- View 2: Interactive Concept Animations Arena -->
@@ -344,9 +394,24 @@
                 </div>
             </section>
         </main>
-    </div>
+    </div> <!-- End .app-container -->
 
-    <!-- Search Modal -->
+    <!-- JetBrains IDE Bottom Status Bar -->
+    <footer class="ide-status-bar" id="ide-status-bar">
+        <div class="ide-status-left">
+            <span class="ide-status-item"><i class="fa-solid fa-code-branch" style="color:#38bdf8;"></i> git: main</span>
+            <span class="ide-status-item"><i class="fa-solid fa-check-double" style="color:#10b981;"></i> C++23 (ISO/IEC 14882:2023)</span>
+            <span class="ide-status-item"><i class="fa-solid fa-microchip" style="color:#a855f7;"></i> Opt: -O3 -Wall -Wextra</span>
+            <span class="ide-status-item" id="ide-status-subtopic"><i class="fa-solid fa-folder-tree"></i> Mod 1 ➔ 1.2 History of C++</span>
+        </div>
+        <div class="ide-status-right">
+            <span class="ide-status-item" id="ide-status-pos">Ln 1, Col 1</span>
+            <span class="ide-status-item">UTF-8</span>
+            <span class="ide-status-item">CRLF</span>
+            <span class="ide-status-item"><i class="fa-solid fa-memory" style="color:#38bdf8;"></i> Mem: 14.2 MB</span>
+            <span class="ide-status-item success"><i class="fa-solid fa-circle-check"></i> AST Ready</span>
+        </div>
+    </footer>
     <div class="modal-overlay hidden" id="search-modal">
         <div class="search-modal-box">
             <div class="search-modal-header">

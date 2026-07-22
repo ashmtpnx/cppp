@@ -1,10 +1,9 @@
 // C++ & DSA MasterClass Pro - Core Application Logic (app.js)
 
 class MasterClassApp {
-    constructor() {
         this.currentModuleId = "mod-1";
         this.currentSubtopicId = "mod-1-1";
-        this.activeTab = "curriculum";
+        this.activeTab = "home";
         this.studentMode = true; // true = Beginner analogies, false = C++ Professional deep dives
         this.theme = localStorage.getItem("cpp_theme") || "dark";
         this.quizCategory = "all";
@@ -389,10 +388,8 @@ class MasterClassApp {
         // 8. Populate JetBrains IDE Column 3 Workbench with live C++ code
         this.populateIdeWorkbench(modData, subData);
 
-        // 9. Ensure we are on the curriculum view
-        if (this.activeTab !== "curriculum") {
-            this.switchTab("curriculum");
-        }
+        // 9. Optional: Ensure we are on the curriculum view ONLY if it's not the initial load
+        // We removed the forced switch to curriculum here so it defaults to home view.
     }
 
     populateIdeWorkbench(modData, subData) {

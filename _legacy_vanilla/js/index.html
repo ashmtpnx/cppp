@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>C++ & DSA MasterClass Pro | Complete Course & Interactive Visualizer</title>
+    <meta name="description" content="Comprehensive C++ and Data Structures & Algorithms training curriculum covering all 24 modules from beginner syntax to advanced graph algorithms with interactive visualizations and full projects.">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="dark-theme">
+    <!-- Top Navigation Bar -->
+    <header class="top-nav">
+        <div class="nav-left">
+            <button id="mobile-menu-toggle" class="icon-btn" aria-label="Toggle Sidebar">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+            <div class="logo">
+                <div class="logo-icon"><i class="fa-solid fa-code"></i></div>
+                <div class="logo-text">
+                    <span class="logo-title">C++ & DSA <span class="highlight">MasterClass Pro</span></span>
+                    <span class="logo-subtitle">Complete 24-Module Training Curriculum</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Search & Stats -->
+        <div class="nav-center">
+            <div class="search-box" id="open-search-modal">
+                <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                <input type="text" placeholder="Search any topic, subtopic, or C++ concept... (Ctrl + K)" readonly>
+                <span class="kbd-shortcut">⌘K</span>
+            </div>
+        </div>
+
+        <!-- Right Controls & Navigation Tabs -->
+        <div class="nav-right">
+            <div class="nav-tabs">
+                <button class="nav-tab active" data-view="home">
+                    <i class="fa-solid fa-house"></i> <span>Home</span>
+                </button>
+                <button class="nav-tab" data-view="curriculum">
+                    <i class="fa-solid fa-book-open"></i> <span>Curriculum</span>
+                </button>
+                <button class="nav-tab" data-view="visualizer">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i> <span>Interactive Animations</span>
+                </button>
+                <button class="nav-tab" data-view="projects">
+                    <i class="fa-solid fa-laptop-code"></i> <span>C++ Projects</span>
+                </button>
+                <button class="nav-tab" data-view="practice">
+                    <i class="fa-solid fa-graduation-cap"></i> <span>Quiz & Practice</span>
+                </button>
+            </div>
+
+            <!-- Theme Toggle & Bookmarks -->
+            <button id="bookmark-btn" class="icon-btn tooltip" data-tooltip="Saved Bookmarks">
+                <i class="fa-regular fa-bookmark"></i>
+                <span id="bookmark-count" class="badge hidden">0</span>
+            </button>
+            <button id="theme-toggle" class="icon-btn tooltip" data-tooltip="Toggle Light/Dark Theme">
+                <i class="fa-solid fa-sun light-icon"></i>
+                <i class="fa-solid fa-moon dark-icon"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Workspace Layout -->
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="progress-bar-container">
+                    <div class="progress-label">
+                        <span>Course Completion</span>
+                        <span id="progress-percentage">0%</span>
+                    </div>
+                    <div class="progress-track">
+                        <div class="progress-fill" id="progress-bar-fill"></div>
+                    </div>
+                </div>
+                
+                <div class="sidebar-filters">
+                    <button class="filter-btn active" data-filter="all">All (24)</button>
+                    <button class="filter-btn" data-filter="core">Core C++ (1-8)</button>
+                    <button class="filter-btn" data-filter="oop">OOP & Adv (9-13)</button>
+                    <button class="filter-btn" data-filter="dsa">DSA (14-24)</button>
+                </div>
+            </div>
+
+            <div class="sidebar-actions">
+                <button id="expand-all-btn" class="sidebar-action-btn">
+                    <i class="fa-solid fa-folder-open"></i> Expand All
+                </button>
+                <button id="collapse-all-btn" class="sidebar-action-btn">
+                    <i class="fa-solid fa-folder"></i> Collapse All
+                </button>
+            </div>
+
+            <nav class="curriculum-tree" id="curriculum-tree">
+                <!-- Dynamically populated from curriculum data -->
+            </nav>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="content-area" id="main-content">
+            <!-- View 0: Home Page -->
+            <section id="view-home" class="view-section active">
+                <div class="home-hero">
+                    <!-- Animated Background Elements -->
+                    <div class="hero-bg-elements">
+                        <div class="floating-orb orb-1"></div>
+                        <div class="floating-orb orb-2"></div>
+                        <div class="floating-symbol sym-1"><i class="fa-brands fa-cuttlefish"></i>++</div>
+                        <div class="floating-symbol sym-2"><i class="fa-solid fa-code"></i></div>
+                        <div class="floating-symbol sym-3"><i class="fa-solid fa-microchip"></i></div>
+                    </div>
+                    
+                    <div class="home-hero-content animate-slide-up">
+                        <h1 class="gradient-text-animate">Master C++ & Data Structures</h1>
+                        <p class="home-subtitle">From zero to professional architecture with interactive visualizers and real-world projects.</p>
+                        <button class="btn-primary start-course-btn pulse-glow" onclick="app.switchTab('curriculum')">
+                            <span>Start Learning</span> <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="home-grid">
+                    <div class="home-card animate-slide-up stagger-1" onclick="app.switchTab('curriculum')">
+                        <div class="card-icon cyan"><i class="fa-solid fa-book-open"></i></div>
+                        <h3>Curriculum</h3>
+                        <p>24 modules covering Core C++, OOP, and DSA.</p>
+                    </div>
+                    <div class="home-card animate-slide-up stagger-2" onclick="app.switchTab('visualizer')">
+                        <div class="card-icon purple"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
+                        <h3>Interactive Animations</h3>
+                        <p>Visualize how memory, pointers, and structures work.</p>
+                    </div>
+                    <div class="home-card animate-slide-up stagger-3" onclick="app.switchTab('projects')">
+                        <div class="card-icon orange"><i class="fa-solid fa-laptop-code"></i></div>
+                        <h3>C++ Projects</h3>
+                        <p>Real-world Bank & Hotel Management systems.</p>
+                    </div>
+                    <div class="home-card animate-slide-up stagger-4" onclick="app.switchTab('practice')">
+                        <div class="card-icon emerald"><i class="fa-solid fa-graduation-cap"></i></div>
+                        <h3>Quiz & Practice</h3>
+                        <p>Test your conceptual mastery with interactive quizzes.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- View 1: Curriculum Reader (JetBrains IDE 3-Column Studio Workbench) -->
+            <section id="view-curriculum" class="view-section">
+                <!-- JetBrains IDE Top Workspace Header Bar -->
+                <div class="ide-workspace-header">
+                    <div class="ide-tabs-bar" id="ide-tabs-bar">
+                        <div class="ide-tab active" id="current-ide-tab"><i class="fa-solid fa-file-code" style="color:#38bdf8;"></i> <span id="ide-tab-title">1.2 History of C++.cpp</span> <i class="fa-solid fa-xmark tab-close"></i></div>
+                        <div class="ide-tab"><i class="fa-solid fa-book" style="color:#a855f7;"></i> <span>cpp_reference.hpp</span></div>
+                        <div class="ide-tab-add" title="New Scratch File" onclick="app.newScratchFile()"><i class="fa-solid fa-plus"></i></div>
+                    </div>
+                    <div class="ide-layout-controls">
+                        <button class="ide-mode-pill" onclick="app.toggleSidebarTree()" title="Toggle Sidebar Navigation Tree (Ctrl+B)"><i class="fa-solid fa-bars"></i> Toggle Tree</button>
+                        <div class="ide-split-toggle-group">
+                            <button class="ide-split-btn active" id="mode-split-btn" onclick="app.setWorkbenchMode('split')" title="Side-by-Side Split View"><i class="fa-solid fa-table-columns"></i> Split</button>
+                            <button class="ide-split-btn" id="mode-theory-btn" onclick="app.setWorkbenchMode('theory')" title="Maximize Theory & Diagrams View"><i class="fa-solid fa-book-open"></i> Theory Only</button>
+                            <button class="ide-split-btn" id="mode-code-btn" onclick="app.setWorkbenchMode('code')" title="Maximize C++ Code Sandbox & Terminal"><i class="fa-solid fa-code"></i> Code Only</button>
+                        </div>
+                    </div>
+                    <div class="ide-toolbar-actions">
+                        <span class="ide-compiler-pill"><i class="fa-solid fa-microchip"></i> Clang 18.1 (-O3)</span>
+                        <div class="ide-template-dropdown-wrapper">
+                            <button class="ide-tool-btn template-btn" onclick="app.toggleTemplateMenu()" title="Load C++ Code Template"><i class="fa-solid fa-wand-magic-sparkles"></i> Templates <i class="fa-solid fa-chevron-down" style="font-size:10px;"></i></button>
+                            <div class="ide-template-menu hidden" id="ide-template-menu">
+                                <div class="template-item" onclick="app.loadTemplate('vector')"><i class="fa-solid fa-list-ol"></i> Standard I/O & Vectors</div>
+                                <div class="template-item" onclick="app.loadTemplate('oop')"><i class="fa-solid fa-cube"></i> Classes & Virtual Functions</div>
+                                <div class="template-item" onclick="app.loadTemplate('stack')"><i class="fa-solid fa-layer-group"></i> LIFO Stack with Pointers</div>
+                                <div class="template-item" onclick="app.loadTemplate('leak')"><i class="fa-solid fa-bug"></i> Memory Leak & ASan Test</div>
+                                <div class="template-item" onclick="app.loadTemplate('sort')"><i class="fa-solid fa-bolt"></i> Fast Sorting & Lambdas</div>
+                            </div>
+                        </div>
+                        <button class="ide-tool-btn run-toolbar-btn" onclick="app.runIdeSandbox()" title="Execute C++ Code (F5)"><i class="fa-solid fa-play"></i> Run Sandbox</button>
+                        <button class="ide-tool-btn debug-toolbar-btn" onclick="app.debugIdeSandbox()" title="Inspect Memory & VTable (F9)"><i class="fa-solid fa-bug"></i> Debug AST</button>
+                    </div>
+                </div>
+
+                <!-- 3-Column Split Workbench Container (Sidebar is Col 1, Center is Col 2, IDE Code Workbench is Col 3) -->
+                <div class="curriculum-workbench-split">
+                    <!-- Column 2: Theory, Technical Explanations & Graphical Roadmap Stage -->
+                    <div class="curriculum-center-column" id="curriculum-center-column">
+                        <div class="content-header" id="topic-header">
+                            <div class="topic-meta">
+                                <span class="topic-badge" id="current-module-badge">Module 1</span>
+                                <span class="topic-level" id="current-module-level"><i class="fa-solid fa-signal"></i> Fundamental</span>
+                            </div>
+                            <div class="topic-title-row">
+                                <h1 id="current-subtopic-title">Welcome to C++ & DSA MasterClass Pro</h1>
+                                <button id="toggle-bookmark-subtopic" class="action-btn outline">
+                                    <i class="fa-regular fa-bookmark"></i> <span>Bookmark</span>
+                                </button>
+                            </div>
+                            <p class="topic-summary" id="current-subtopic-summary">
+                                Select any topic or subtopic from the 24-module curriculum sidebar to explore deep technical explanations, C++ professional code patterns, animated diagrams, and time complexity analysis.
+                            </p>
+                        </div>
+
+                        <!-- Subtopic Content Body -->
+                        <div class="content-body" id="topic-content-body">
+                    <!-- Default Welcome / Overview Panel -->
+                    <div class="welcome-dashboard">
+                        <div class="hero-banner">
+                            <div class="hero-text">
+                                <h2>Master C++ & Data Structures from Zero to Professional</h2>
+                                <p>Covering the complete curriculum: from streams and memory management to advanced AVL trees, doubly linked lists, and graph algorithms.</p>
+                                <div class="hero-stats">
+                                    <div class="stat-box">
+                                        <span class="stat-number">24</span>
+                                        <span class="stat-label">Modules</span>
+                                    </div>
+                                    <div class="stat-box">
+                                        <span class="stat-number">140+</span>
+                                        <span class="stat-label">Subtopics</span>
+                                    </div>
+                                    <div class="stat-box">
+                                        <span class="stat-number">8+</span>
+                                        <span class="stat-label">Interactive Animations</span>
+                                    </div>
+                                    <div class="stat-box">
+                                        <span class="stat-number">2</span>
+                                        <span class="stat-label">Full Projects</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="hero-graphic">
+                                <div class="animated-cube-container">
+                                    <div class="code-badge-floating c-badge"><i class="fa-solid fa-c"></i>++</div>
+                                    <div class="code-badge-floating dsa-badge"><i class="fa-solid fa-diagram-project"></i> DSA</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Quick Navigation Grid -->
+                        <h3 class="section-title"><i class="fa-solid fa-compass"></i> Explore Course Sections</h3>
+                        <div class="overview-grid">
+                            <div class="overview-card" onclick="app.selectModule(0, 0)">
+                                <div class="card-icon cyan"><i class="fa-solid fa-play"></i></div>
+                                <h4>1. Core C++ Foundations</h4>
+                                <p>Modules 1 to 5: Syntax, streams, data types, operators, loops, and conditional flow logic.</p>
+                                <span class="card-link">Start Learning <i class="fa-solid fa-arrow-right"></i></span>
+                            </div>
+                            <div class="overview-card" onclick="app.selectModule(5, 0)">
+                                <div class="card-icon emerald"><i class="fa-solid fa-layer-group"></i></div>
+                                <h4>2. Arrays, Functions & Pointers</h4>
+                                <p>Modules 6 to 7: Memory allocation, 1D/2D arrays, matrix math, recursion, pointers, and call by reference.</p>
+                                <span class="card-link">Start Learning <i class="fa-solid fa-arrow-right"></i></span>
+                            </div>
+                            <div class="overview-card" onclick="app.selectModule(7, 0)">
+                                <div class="card-icon purple"><i class="fa-solid fa-cubes"></i></div>
+                                <h4>3. Object-Oriented Programming</h4>
+                                <p>Modules 8 to 12: Classes, constructors, operator overloading, virtual functions, templates, & dynamic memory.</p>
+                                <span class="card-link">Start Learning <i class="fa-solid fa-arrow-right"></i></span>
+                            </div>
+                            <div class="overview-card" onclick="app.switchTab('projects')">
+                                <div class="card-icon orange"><i class="fa-solid fa-briefcase"></i></div>
+                                <h4>4. Real-World C++ Projects</h4>
+                                <p>Module 13: Full architectural source code for Bank Management System & Hotel Billing System.</p>
+                                <span class="card-link">View Projects <i class="fa-solid fa-arrow-right"></i></span>
+                            </div>
+                            <div class="overview-card" onclick="app.selectModule(13, 0)">
+                                <div class="card-icon pink"><i class="fa-solid fa-layer-group"></i></div>
+                                <h4>5. Linear Data Structures</h4>
+                                <p>Modules 14 to 20: Stacks, Infix/Postfix, Queues, Deque, Priority Queue, Singly, Doubly & Circular Linked Lists.</p>
+                                <span class="card-link">Start Learning <i class="fa-solid fa-arrow-right"></i></span>
+                            </div>
+                            <div class="overview-card" onclick="app.selectModule(20, 0)">
+                                <div class="card-icon yellow"><i class="fa-solid fa-network-wired"></i></div>
+                                <h4>6. Non-Linear DSA & Algorithms</h4>
+                                <p>Modules 21 to 24: Searching, 9 Sorting algorithms, BST, AVL, B-Trees, Address Calculation & Graph shortest paths.</p>
+                                <span class="card-link">Start Learning <i class="fa-solid fa-arrow-right"></i></span>
+                            </div>
+                        </div>
+
+                        <!-- Featured Concept Animation Preview -->
+                        <div class="animation-preview-banner" onclick="app.switchTab('visualizer')">
+                            <div class="banner-content">
+                                <span class="tag">Interactive Visualizer Included</span>
+                                <h3>Visual Learning Engine: Watch C++ & DSA in Action</h3>
+                                <p>Don't just read code—interact with animated Stacks, Queues, Linked Lists, Sorting Sandboxes, and Memory Allocation (Stack vs Heap) diagrams.</p>
+                            </div>
+                            <button class="btn-primary" onclick="app.switchTab('visualizer')">Launch Visualizers <i class="fa-solid fa-wand-magic-sparkles"></i></button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Footer Navigation Between Subtopics -->
+                <div class="subtopic-navigation" id="subtopic-nav-footer">
+                    <button id="prev-subtopic-btn" class="nav-step-btn hidden">
+                        <i class="fa-solid fa-arrow-left"></i>
+                        <div class="step-info">
+                            <span class="step-label">Previous Topic</span>
+                            <span class="step-title" id="prev-subtopic-name">---</span>
+                        </div>
+                    </button>
+                    <button id="mark-completed-btn" class="mark-done-btn">
+                        <i class="fa-regular fa-circle-check"></i> <span>Mark Topic as Completed</span>
+                    </button>
+                    <button id="next-subtopic-btn" class="nav-step-btn hidden">
+                        <div class="step-info text-right">
+                            <span class="step-label">Next Topic</span>
+                            <span class="step-title" id="next-subtopic-name">---</span>
+                        </div>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div> <!-- End .subtopic-navigation -->
+                    </div> <!-- End .curriculum-center-column (Column 2) -->
+
+                    <!-- Interactive Drag Resizer Grip between Theory & Code panels -->
+                    <div class="ide-resizer-handle" id="ide-resizer" title="Drag left/right to resize Theory and Code columns">
+                        <div class="resizer-grip"><i class="fa-solid fa-grip-lines-vertical"></i></div>
+                    </div>
+
+                    <!-- Column 3: JetBrains IDE C++ Code Sandbox & Terminal Debugger Workbench -->
+                    <div class="ide-workbench-column" id="ide-code-workbench">
+                        <div class="ide-panel-header">
+                            <div class="ide-panel-tabs">
+                                <button class="ide-panel-tab active" onclick="app.switchIdeCodeTab('main')"><i class="fa-solid fa-code" style="color:#38bdf8;"></i> main.cpp</button>
+                                <button class="ide-panel-tab" onclick="app.switchIdeCodeTab('bug')"><i class="fa-solid fa-bug" style="color:#f97316;"></i> bug_case.cpp</button>
+                                <button class="ide-panel-tab" onclick="app.switchIdeCodeTab('ast')"><i class="fa-solid fa-memory" style="color:#a855f7;"></i> memory_vtable.asm</button>
+                            </div>
+                            <div class="ide-panel-actions">
+                                <div class="ide-font-zoom">
+                                    <button class="ide-zoom-btn" onclick="app.zoomIdeEditor(-1)" title="Decrease font size"><i class="fa-solid fa-minus"></i></button>
+                                    <span id="ide-font-label">13.5px</span>
+                                    <button class="ide-zoom-btn" onclick="app.zoomIdeEditor(1)" title="Increase font size"><i class="fa-solid fa-plus"></i></button>
+                                </div>
+                                <button class="ide-action-btn run-btn" onclick="app.runIdeSandbox()" title="Run Code (F5)"><i class="fa-solid fa-play"></i> Run</button>
+                                <button class="ide-action-btn debug-btn" onclick="app.debugIdeSandbox()" title="Analyze AST/Memory (F9)"><i class="fa-solid fa-bug"></i> Debug</button>
+                                <button class="ide-action-btn copy-btn" onclick="app.copyIdeCode()" title="Copy Code to Clipboard"><i class="fa-regular fa-copy"></i></button>
+                            </div>
+                        </div>
+                        <div class="ide-editor-container" id="ide-editor-container">
+                            <div class="ide-line-numbers" id="ide-line-numbers">1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16<br>17<br>18<br>19<br>20</div>
+                            <textarea id="ide-live-code-editor" class="ide-code-textarea" spellcheck="false" oninput="app.updateIdeLineNumbers()" onkeydown="app.handleIdeEditorKeydown(event)"></textarea>
+                        </div>
+                        <div class="ide-terminal-panel" id="ide-terminal-panel">
+                            <div class="ide-terminal-header">
+                                <span><i class="fa-solid fa-terminal"></i> Terminal / Compilation Output (Clang 18.1 -std=c++23)</span>
+                                <div style="display:flex; gap:8px; align-items:center;">
+                                    <button class="ide-term-clear" onclick="app.clearIdeTerminal()"><i class="fa-solid fa-trash-can"></i> Clear</button>
+                                </div>
+                            </div>
+                            <div class="ide-terminal-body" id="ide-terminal-output">
+                                <div class="term-line success">✔ Clang 18.1.0 Ready. Select a subtopic or click [▶ Run] to execute C++ code live.</div>
+                            </div>
+                            <!-- Interactive Standard Input (stdin) Row -->
+                            <div class="ide-terminal-stdin-row">
+                                <span class="stdin-prompt"><i class="fa-solid fa-angle-right"></i> stdin:</span>
+                                <input type="text" id="ide-stdin-input" placeholder="Optional interactive inputs (e.g. 42 100 'hello') passed to std::cin..." onkeydown="if(event.key==='Enter')app.runIdeSandbox()" />
+                                <button class="stdin-send-btn" onclick="app.runIdeSandbox()"><i class="fa-solid fa-paper-plane"></i> Send & Run</button>
+                            </div>
+                        </div>
+                    </div> <!-- End .ide-workbench-column (Column 3) -->
+                </div> <!-- End .curriculum-workbench-split -->
+            </section>
+
+            <!-- View 2: Interactive Concept Animations Arena -->
+            <section id="view-visualizer" class="view-section">
+                <div class="section-intro">
+                    <h2><i class="fa-solid fa-wand-magic-sparkles"></i> C++ & DSA Interactive Animations</h2>
+                    <p>Experience how C++ manages memory, manipulates pointers, and processes complex data structures through real-time interactive simulations.</p>
+                </div>
+
+                <div class="visualizer-selector-row">
+                    <button class="vis-tab-btn active" data-vis="stack">Stack & Expressions</button>
+                    <button class="vis-tab-btn" data-vis="queue">Queue & Circular Queue</button>
+                    <button class="vis-tab-btn" data-vis="linkedlist">Pointers & Linked List</button>
+                    <button class="vis-tab-btn" data-vis="sorting">Sorting & Searching Sandbox</button>
+                    <button class="vis-tab-btn" data-vis="memory">C++ Stack vs Heap (new/delete)</button>
+                </div>
+
+                <!-- Visualizer Display Container -->
+                <div class="visualizer-stage" id="visualizer-stage">
+                    <!-- Rendered dynamically by visualizer.js -->
+                </div>
+            </section>
+
+            <!-- View 3: C++ Projects Showcase (Module 13) -->
+            <section id="view-projects" class="view-section">
+                <div class="section-intro">
+                    <h2><i class="fa-solid fa-laptop-code"></i> Professional C++ Projects (Module 13)</h2>
+                    <p>Complete, production-ready C++ projects utilizing Object-Oriented Programming, File I/O, classes, pointers, and clean menu-driven architecture.</p>
+                </div>
+
+                <div class="projects-grid" id="projects-showcase-grid">
+                    <!-- Project 1: Bank Management System -->
+                    <div class="project-showcase-card">
+                        <div class="project-header">
+                            <div class="project-badge">Project 01</div>
+                            <h3>Bank Management System Project</h3>
+                            <p>A multi-user banking portal that manages customer accounts, deposits, withdrawals, fund transfers, and balance inquiries using persistent file storage (`fstream`).</p>
+                        </div>
+                        <div class="project-features">
+                            <span class="p-tag"><i class="fa-solid fa-check"></i> Class `BankAccount` OOP</span>
+                            <span class="p-tag"><i class="fa-solid fa-check"></i> Binary File I/O (`read`/`write`)</span>
+                            <span class="p-tag"><i class="fa-solid fa-check"></i> Exception Handling & Validation</span>
+                        </div>
+                        <div class="project-code-box">
+                            <div class="code-bar">
+                                <span>bank_management.cpp</span>
+                                <button class="copy-code-btn" onclick="app.copyProjectCode('bank')"><i class="fa-regular fa-copy"></i> Copy Full Code</button>
+                            </div>
+                            <pre><code class="language-cpp" id="bank-code-content">// Bank Management System Project - Full Implementation loaded by app.js</code></pre>
+                        </div>
+                    </div>
+
+                    <!-- Project 2: Hotel Billing System -->
+                    <div class="project-showcase-card">
+                        <div class="project-header">
+                            <div class="project-badge">Project 02</div>
+                            <h3>Hotel Management & Billing System Project</h3>
+                            <p>An enterprise-grade hotel room booking and automated invoice calculation system featuring room classification, restaurant order tracking, tax computation, and receipt generation.</p>
+                        </div>
+                        <div class="project-features">
+                            <span class="p-tag"><i class="fa-solid fa-check"></i> Inheritance & Polymorphism</span>
+                            <span class="p-tag"><i class="fa-solid fa-check"></i> Dynamic Itemized Billing</span>
+                            <span class="p-tag"><i class="fa-solid fa-check"></i> Room Status Tracking</span>
+                        </div>
+                        <div class="project-code-box">
+                            <div class="code-bar">
+                                <span>hotel_billing.cpp</span>
+                                <button class="copy-code-btn" onclick="app.copyProjectCode('hotel')"><i class="fa-regular fa-copy"></i> Copy Full Code</button>
+                            </div>
+                            <pre><code class="language-cpp" id="hotel-code-content">// Hotel Management Billing System Project - Full Implementation loaded by app.js</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- View 4: Interactive Quiz & Practice Arena -->
+            <section id="view-practice" class="view-section">
+                <div class="section-intro">
+                    <h2><i class="fa-solid fa-graduation-cap"></i> Knowledge Mastery & Interactive Quiz</h2>
+                    <p>Test your conceptual mastery of C++ memory rules, Object-Oriented design, and Data Structures & Algorithms time complexities.</p>
+                </div>
+
+                <div class="quiz-controls">
+                    <div class="quiz-category-select">
+                        <label for="quiz-category">Select Topic Area:</label>
+                        <select id="quiz-category">
+                            <option value="all">Comprehensive (All 24 Modules)</option>
+                            <option value="core">Core C++ & Syntax (Mod 1-5)</option>
+                            <option value="pointers">Arrays, Functions & Pointers (Mod 6-7)</option>
+                            <option value="oop">OOP & Operator Overloading (Mod 8-12)</option>
+                            <option value="dsa_linear">Linear DSA: Stack, Queue, Linked List (Mod 14-20)</option>
+                            <option value="dsa_trees">Trees, Searching, Sorting & Graphs (Mod 21-24)</option>
+                        </select>
+                    </div>
+                    <button class="btn-primary" id="start-quiz-btn"><i class="fa-solid fa-play"></i> Start Quiz Session</button>
+                </div>
+
+                <div class="quiz-arena" id="quiz-arena">
+                    <div class="quiz-placeholder">
+                        <i class="fa-solid fa-circle-question placeholder-icon"></i>
+                        <h3>Ready to Test Your C++ & DSA Skills?</h3>
+                        <p>Select a topic area above and click <strong>Start Quiz Session</strong> to begin an interactive multi-choice assessment with instant explanations.</p>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div> <!-- End .app-container -->
+
+    <!-- JetBrains IDE Bottom Status Bar -->
+    <footer class="ide-status-bar" id="ide-status-bar">
+        <div class="ide-status-left">
+            <span class="ide-status-item"><i class="fa-solid fa-code-branch" style="color:#38bdf8;"></i> git: main</span>
+            <span class="ide-status-item"><i class="fa-solid fa-check-double" style="color:#10b981;"></i> C++23 (ISO/IEC 14882:2023)</span>
+            <span class="ide-status-item"><i class="fa-solid fa-microchip" style="color:#a855f7;"></i> Opt: -O3 -Wall -Wextra</span>
+            <span class="ide-status-item" id="ide-status-subtopic"><i class="fa-solid fa-folder-tree"></i> Mod 1 ➔ 1.2 History of C++</span>
+        </div>
+        <div class="ide-status-right">
+            <span class="ide-status-item" id="ide-status-pos">Ln 1, Col 1</span>
+            <span class="ide-status-item">UTF-8</span>
+            <span class="ide-status-item">CRLF</span>
+            <span class="ide-status-item"><i class="fa-solid fa-memory" style="color:#38bdf8;"></i> Mem: 14.2 MB</span>
+            <span class="ide-status-item success"><i class="fa-solid fa-circle-check"></i> AST Ready</span>
+        </div>
+    </footer>
+    <div class="modal-overlay hidden" id="search-modal">
+        <div class="search-modal-box">
+            <div class="search-modal-header">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" id="modal-search-input" placeholder="Search for 'Virtual Function', 'Quick Sort', 'Pointers', 'clrscr'..." autofocus>
+                <button class="close-modal-btn" id="close-search-modal"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="search-results-list" id="search-results-list">
+                <div class="empty-search">Type at least 2 characters to search across all 24 modules and subtopics.</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bookmarks Drawer Modal -->
+    <div class="modal-overlay hidden" id="bookmarks-modal">
+        <div class="bookmarks-drawer">
+            <div class="drawer-header">
+                <h3><i class="fa-solid fa-bookmark"></i> Your Bookmarked Topics</h3>
+                <button class="close-modal-btn" id="close-bookmarks-modal"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="bookmarks-list" id="bookmarks-list">
+                <!-- Populated dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <!-- Script Dependencies -->
+    <script src="data/modules_1_to_8.js"></script>
+    <script src="data/modules_9_to_14.js"></script>
+    <script src="data/modules_15_to_24.js"></script>
+    <script src="js/visualizer.js"></script>
+    <script src="js/quiz-data.js"></script>
+    <script src="js/subtopic-diagrams.js"></script>
+    <script src="js/subtopic-diagrams-2.js"></script>
+    <script src="js/subtopic-diagrams-3.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
